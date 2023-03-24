@@ -1,5 +1,5 @@
 import { Button, Form, Input, InputNumber, Modal } from "antd";
-import { MaskedInput } from "antd-mask-input";
+// import { MaskedInput } from "antd-mask-input";
 import React, { Dispatch, FC, ReactElement, SetStateAction } from "react";
 
 interface FormProps {
@@ -81,7 +81,7 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
           label="Telefone"
           rules={[{ required: true }]}
         >
-          <MaskedInput id="input-telefone" mask="(00) 0 0000 0000" />
+          {/* <MaskedInput id="input-telefone" mask="(00) 0 0000 0000" /> */}
         </Form.Item>
         {/* <Form.Item
           name={["user", "age"]}
