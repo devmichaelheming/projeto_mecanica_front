@@ -1,22 +1,18 @@
 import LayoutPage from "~/components/Layout";
 import GlobalStyles from "~/styles/GlobalStyles";
-import { ConfigProvider } from "antd";
+import { queryClient } from "~/utils/services/queryClient";
 import type { AppProps } from "next/app";
+import { ReactElement } from "react";
+import { QueryClientProvider } from "react-query";
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
-    <ConfigProvider
-      theme={{
-        components: {
-          Card: {},
-        },
-      }}
-    >
+    <QueryClientProvider client={queryClient}>
       <LayoutPage>
-        <Component {...pageProps} />
         <GlobalStyles />
+        <Component {...pageProps} />
       </LayoutPage>
-    </ConfigProvider>
+    </QueryClientProvider>
   );
 };
 

@@ -1,18 +1,29 @@
-import React, { FC, ReactElement } from "react";
-import type { ColumnsType } from "antd/es/table";
 import { MenuOutlined } from "@ant-design/icons";
+import { api } from "~/utils/services/api";
 import type { MenuProps } from "antd";
-import { Dropdown, Space, Table } from "antd";
-
+import { Dropdown, Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import React, { FC, ReactElement } from "react";
+import { useQuery } from "react-query";
 interface DataType {
   key: React.Key;
   name: string;
   email: string;
-  phone: string;
-  cpf: string;
 }
 
 const Lista: FC = (): ReactElement => {
+  const { data, isLoading } = useQuery(
+    "users",
+    async () => {
+      const response = await api.get("/users");
+
+      return response.data;
+    },
+    {
+      staleTime: 1000 * 60, // 1 minute
+    }
+  );
+
   const items: MenuProps["items"] = [
     {
       label: "Editar",
@@ -40,22 +51,7 @@ const Lista: FC = (): ReactElement => {
       fixed: "left",
       sorter: true,
     },
-    {
-      title: "Telefone",
-      width: 100,
-      dataIndex: "phone",
-      key: "phone",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "CPF",
-      width: 100,
-      dataIndex: "cpf",
-      key: "cpf",
-      fixed: "left",
-      sorter: true,
-    },
+
     {
       title: "Ações",
       key: "operation",
@@ -69,33 +65,8 @@ const Lista: FC = (): ReactElement => {
     },
   ];
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      name: "Michael Heming",
-      email: "devmichael.heming@gmail.com",
-      phone: "(66) 9.99717-7126",
-      cpf: "054.242.452-99",
-    },
-    {
-      key: "2",
-      name: "Roseni Heming",
-      email: "roseniheming@hotmail.com",
-      phone: "(66) 9.9911-2343",
-      cpf: "344.234.432-23",
-    },
-    {
-      key: "3",
-      name: "Paulo Jorge de Oliveira",
-      email: "paulojorge@gmail.com",
-      phone: "(66) 9.9965-1544",
-      cpf: "054.342.232-11",
-    },
-  ];
   return (
-    <>
-      <Table columns={columns} dataSource={data} scroll={{ x: 1300 }} />
-    </>
+    <Table bordered columns={columns} loading={isLoading} dataSource={data} />
   );
 };
 

@@ -1,11 +1,12 @@
+import { HomeOutlined, UserOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout, Menu, theme } from "antd";
+import { useRouter } from "next/dist/client/router";
 import React, { FC, ReactElement, ReactNode } from "react";
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+
 import Footer from "./Footer";
 import Header from "./Header";
-import { Router, useRouter } from "next/router";
-
+import S from "./styles";
 const { Content, Sider } = Layout;
 
 interface LayoutPageProps {
@@ -61,14 +62,8 @@ const LayoutPage: FC<LayoutPageProps> = ({ children }): ReactElement => {
       <Header />
 
       <Content style={{ padding: "0 50px" }}>
-        <Layout
-          style={{
-            padding: "24px 0",
-            background: colorBgContainer,
-            minHeight: "calc(100vh - 131px)",
-          }}
-        >
-          <Sider style={{ background: colorBgContainer }} width={200}>
+        <S.Layout>
+          <Sider width={200}>
             <Menu
               mode="inline"
               defaultSelectedKeys={["1"]}
@@ -80,7 +75,7 @@ const LayoutPage: FC<LayoutPageProps> = ({ children }): ReactElement => {
           <Content style={{ padding: "0 24px", minHeight: 280 }}>
             {children}
           </Content>
-        </Layout>
+        </S.Layout>
       </Content>
 
       <Footer />

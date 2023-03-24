@@ -1,5 +1,5 @@
-import { Breadcrumb, Button, Card } from "antd";
-import Link from "next/link";
+import { Card, Link } from "~/components";
+import { Breadcrumb, Button } from "antd";
 import React, { FC, ReactElement, useState } from "react";
 
 import Form from "../Form";
@@ -26,8 +26,7 @@ const Pagina: FC = (): ReactElement => {
 
       <Card
         title="Listagem de Usuários"
-        type="inner"
-        extra={
+        filtros={
           <Button type="primary" onClick={() => setIsModal(true)}>
             Novo Usuário
           </Button>

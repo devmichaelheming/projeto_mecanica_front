@@ -1,59 +1,145 @@
-import "antd/dist/reset.css";
+/* istanbul ignore file */
 import { createGlobalStyle } from "styled-components";
 
 export default createGlobalStyle`
   * {
-    padding: 0;
     margin: 0;
-    outline: 0;
+    padding: 0;
     box-sizing: border-box;
   }
 
-  html, body, #root {
-    height: 100%;
-  }
-
   body {
-    font: 14px 'Roboto', sans-serif;
-    background-color: #FFF;
-    color: #333;
-    -webkit-font-smoothing: antialiased !important;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
   }
 
-  ul {
-    list-style: none;
+  body, input, textarea, button {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
   }
 
-  :root {
-    --primary: #2E5D7D;
-    --secondary: #262626;
-    --tooltip: #67C6FC;
-    --menuItem: #EAF4F9;
-    --menuIcon: #4AACF8;
-    --text: #8C8C8C;
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 
-  #components-layout-demo-top-side .logo {
-    float: left;
-    width: 120px;
-    height: 31px;
-    margin: 16px 24px 16px 0;
-    background: rgba(255, 255, 255, 0.3);
-  }
+  html {
+    @media (max-width: 1080px) {
+      font-size: 93.75%;
+    }
 
-  .ant-row-rtl #components-layout-demo-top-side .logo {
-    float: right;
-    margin: 16px 0 16px 24px;
-  }
-
-  .ant-form-item-label label {
-
-    &:before {
-      display: none !important;
+    @media (max-width: 720px) {
+      font-size: 87.5%;
     }
   }
 
-  .ant-form-item {
-    margin-bottom: 16px;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  strong {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  .ant-modal-header{
+    border-radius: 4px !important;
+  }
+
+  .ant-modal-content {
+    border-radius: 4px !important;
+  }
+
+  /* .ant-tree-draggable-icon {
+    display: none;
+  } */
+
+  /* Tree */
+  .ant-tree-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ant-tree .ant-tree-treenode {
+    padding: 0
+  }
+
+  .ant-tree-draggable-icon {
+    display: none;
+  }
+
+   /* Card */
+   .ant-card-bordered {
+    border: 1px solid #CED4DA;
+  }
+
+  .ant-card-head {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+  }
+
+  .ant-card-head {
+    border-bottom: 1px solid #CED4DA;
+  }
+
+  /* checkbox */
+  .ant-checkbox-wrapper-checked {
+    span {
+      color: #000;
+      font-weight: 600;
+    }
+  }
+
+  .ant-radio-wrapper-checked {
+    span {
+      color: #000;
+      font-weight: 600;
+    }
+  }
+
+  // Divider
+  .ant-divider-horizontal {
+    margin: 16px 0
+  }
+
+  // Transfer
+  .ant-transfer-list {
+    width: 100%;
+    height: 264px;
+  }
+
+  // Select
+  .ant-select-multiple .ant-select-selection-item-content {
+    color: #205DCA
+  }
+
+  .ant-select-multiple .ant-select-selection-item {
+    border-radius: 4px;
+    margin-inline-end: 8px;
+  }
+
+  .ant-select-multiple .ant-select-selector {
+    padding: 6px 4px;
+  }
+
+  thead[class*='ant-table-thead'] th {
+    background-color: #ebebeb;
+    color: #262626;
   }
 `;
