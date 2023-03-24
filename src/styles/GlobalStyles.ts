@@ -45,4 +45,15 @@ export default createGlobalStyle`
     float: right;
     margin: 16px 0 16px 24px;
   }
+
+  .ant-form-item-label label {
+
+    &:before {
+      display: none !important;
+    }
+  }
+
+  .ant-form-item {
+    margin-bottom: 16px;
+  }
 `;

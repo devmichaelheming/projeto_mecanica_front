@@ -7,9 +7,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <ConfigProvider
       theme={{
-        token: {
-          colorPrimaryBg: "#2df03e",
-          colorPrimary: "#000000",
+        components: {
+          Card: {},
         },
       }}
     >

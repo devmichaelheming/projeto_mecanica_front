@@ -1,22 +1,42 @@
-import { Breadcrumb } from "antd";
-import React, { FC, ReactElement } from "react";
+import { Breadcrumb, Button, Card } from "antd";
+import Link from "next/link";
+import React, { FC, ReactElement, useState } from "react";
 
+import Form from "../Form";
 import Lista from "../Lista";
 
 const Pagina: FC = (): ReactElement => {
+  const [isModal, setIsModal] = useState(false);
+
   return (
     <>
       <Breadcrumb style={{ margin: "16px 0" }}>
         <Breadcrumb.Item>
-          <a href="/">Home</a>
+          <Link href="/">
+            <a>Home</a>
+          </Link>
         </Breadcrumb.Item>
 
         <Breadcrumb.Item>
-          <a href="/usuarios">Usuários</a>
+          <Link href="/usuarios">
+            <a>Usuários</a>
+          </Link>
         </Breadcrumb.Item>
       </Breadcrumb>
 
-      <Lista />
+      <Card
+        title="Listagem de Usuários"
+        type="inner"
+        extra={
+          <Button type="primary" onClick={() => setIsModal(true)}>
+            Novo Usuário
+          </Button>
+        }
+      >
+        <Lista />
+      </Card>
+
+      <Form isModal={isModal} setIsModal={setIsModal} />
     </>
   );
 };
