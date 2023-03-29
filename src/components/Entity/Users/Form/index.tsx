@@ -1,6 +1,16 @@
-import { Button, Form, Input, InputNumber, Modal } from "antd";
-// import { MaskedInput } from "antd-mask-input";
-import React, { Dispatch, FC, ReactElement, SetStateAction } from "react";
+import { api } from "~/utils/services/api";
+import { Button, Form, Input, message, Modal } from "antd";
+import { MaskedInput } from "antd-mask-input";
+import React, {
+  Dispatch,
+  FC,
+  ReactElement,
+  SetStateAction,
+  useState,
+} from "react";
+
+import { UsersProps } from "../models";
+import { validateMessages } from "./validationsMessages";
 
 interface FormProps {
   isModal: boolean;
@@ -8,34 +18,60 @@ interface FormProps {
 }
 
 const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
-  const [form] = Form.useForm();
-
-  const validateMessages = {
-    required: "${label} é obrigatório!",
-    types: {
-      email: "${label} is not a valid email!",
-      number: "${label} is not a valid number!",
-    },
-    number: {
-      range: "${label} must be between ${min} and ${max}",
-    },
-  };
+  const [form] = Form.useForm<UsersProps>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCancelModal = () => {
     form.resetFields();
     setIsModal(false);
-    console.log("reset");
   };
 
-  const handleSaveData = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        console.log("values", values);
+  const handleSendData = (payload: UsersProps) => {
+    setIsLoading(true);
+    api
+      .post("/users", payload)
+      .then((response) => {
+        setIsLoading(false);
+
+        setTimeout(() => {
+          handleCancelModal();
+        }, 500);
+
+        message.open({
+          type: "success",
+          content: response.data.message,
+        });
       })
-      .catch((error) => {
-        console.log("error", error);
+      .catch(function (error) {
+        console.log(error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
+  };
+
+  const handleSubmit = () => {
+    form.validateFields().then((values) => {
+      handleSendData(values);
+    });
+  };
+
+  const renderButtonsFooter = () => {
+    return (
+      <>
+        <Button type="default" onClick={() => handleCancelModal()}>
+          Cancelar
+        </Button>
+
+        <Button
+          type="primary"
+          onClick={() => handleSubmit()}
+          loading={isLoading}
+        >
+          Cadastrar
+        </Button>
+      </>
+    );
   };
 
   return (
@@ -44,17 +80,7 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
       open={isModal}
       destroyOnClose
       onCancel={() => handleCancelModal()}
-      footer={
-        <>
-          <Button type="primary" onClick={() => handleSaveData()}>
-            Submit
-          </Button>
-
-          <Button type="default" onClick={() => handleCancelModal()}>
-            Cancelar
-          </Button>
-        </>
-      }
+      footer={renderButtonsFooter()}
     >
       <Form
         form={form}
@@ -62,34 +88,42 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
         name="nest-messages"
         validateMessages={validateMessages}
       >
-        <Form.Item name="name" label="Nome" rules={[{ required: true }]}>
-          <Input />
-        </Form.Item>
         <Form.Item
-          name="email"
-          label="Email"
-          rules={[{ type: "email", required: true }]}
+          name="name"
+          label="Nome"
+          rules={[
+            { required: true, message: "O Nome do usuário é obrigatório!" },
+          ]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item name="cpf" label="CPF" rules={[{ required: true }]}>
-          <Input />
+          <Input placeholder="Insira o nome do usuário" />
         </Form.Item>
 
         <Form.Item
-          name="telefone"
-          label="Telefone"
-          rules={[{ required: true }]}
+          name="email"
+          label="E-mail"
+          rules={[
+            {
+              type: "email",
+              required: true,
+            },
+          ]}
         >
-          {/* <MaskedInput id="input-telefone" mask="(00) 0 0000 0000" /> */}
+          <Input placeholder="Insira o e-mail do usuário" />
         </Form.Item>
-        {/* <Form.Item
-          name={["user", "age"]}
-          label="Age"
-          rules={[{ type: "number", min: 0, max: 99 }]}
+
+        <Form.Item name="cpf" label="CPF" rules={[{ required: true }]}>
+          <MaskedInput id="input-cpf" mask="000.000.000-00" />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          label="Senha"
+          rules={[
+            { required: true, min: 8, message: "A Senha é obrigatória!" },
+          ]}
         >
-          <InputNumber />
-        </Form.Item> */}
+          <Input type="password" placeholder="Insira a senha do usuário" />
+        </Form.Item>
       </Form>
     </Modal>
   );

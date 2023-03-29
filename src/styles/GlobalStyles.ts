@@ -142,4 +142,8 @@ export default createGlobalStyle`
     background-color: #ebebeb;
     color: #262626;
   }
+
+  .ant-form-item-explain-error {
+    font-size: 12px;
+  }
 `;

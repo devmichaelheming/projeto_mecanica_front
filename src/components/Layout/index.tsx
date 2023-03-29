@@ -1,6 +1,10 @@
-import { HomeOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  HomeOutlined,
+  UserOutlined,
+  ShoppingCartOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu } from "antd";
 import { useRouter } from "next/dist/client/router";
 import React, { FC, ReactElement, ReactNode } from "react";
 
@@ -13,33 +17,7 @@ interface LayoutPageProps {
   children: ReactNode;
 }
 
-// const items2: MenuProps["items"] = [
-//   UserOutlined,
-//   LaptopOutlined,
-//   NotificationOutlined,
-// ].map((icon, index) => {
-//   const key = String(index + 1);
-
-//   return {
-//     key: `sub${key}`,
-//     icon: React.createElement(icon),
-//     label: `subnav ${key}`,
-
-//     children: new Array(4).fill(null).map((_, j) => {
-//       const subKey = index * 4 + j + 1;
-//       return {
-//         key: subKey,
-//         label: `option${subKey}`,
-//       };
-//     }),
-//   };
-// });
-
 const LayoutPage: FC<LayoutPageProps> = ({ children }): ReactElement => {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
-
   const router = useRouter();
 
   const itemsMenu: MenuProps["items"] = [
@@ -54,6 +32,12 @@ const LayoutPage: FC<LayoutPageProps> = ({ children }): ReactElement => {
       icon: <UserOutlined />,
       label: "Usuários",
       onClick: () => router.push("/usuarios"),
+    },
+    {
+      key: "3",
+      icon: <ShoppingCartOutlined />,
+      label: "Produtos",
+      onClick: () => router.push("/produtos"),
     },
   ];
 
