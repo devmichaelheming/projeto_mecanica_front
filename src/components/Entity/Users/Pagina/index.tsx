@@ -25,7 +25,7 @@ const Pagina: FC = (): ReactElement => {
       </Breadcrumb>
 
       <Card
-        title="Listagem de Usuários"
+        title="Usuários"
         filtros={
           <Button type="primary" onClick={() => setIsModal(true)}>
             Novo Usuário
