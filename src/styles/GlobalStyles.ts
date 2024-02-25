@@ -143,7 +143,18 @@ export default createGlobalStyle`
     color: #262626;
   }
 
+<<<<<<< HEAD
   .ant-form-item-explain-error {
     font-size: 12px;
   }
+=======
+  .demo-logo-vertical {
+    height: 32px;
+    margin: 16px;
+    background: rgba(255, 255, 255, .2);
+    border-radius: 6px;
+  }
+
+
+>>>>>>> devmichael
 `;

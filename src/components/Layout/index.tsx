@@ -1,70 +1,91 @@
-import {
-  HomeOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
+import React, { FC, ReactElement, ReactNode, useState } from "react";
 import type { MenuProps } from "antd";
-import { Layout, Menu } from "antd";
-import { useRouter } from "next/dist/client/router";
-import React, { FC, ReactElement, ReactNode } from "react";
-
-import Footer from "./Footer";
+import { Layout } from "antd";
+import { useRouter } from "next/router";
 import Header from "./Header";
-import S from "./styles";
-const { Content, Sider } = Layout;
+import Image from "next/image";
+const { Content, Footer, Sider } = Layout;
+import {
+  budgetIcon,
+  homeIcon,
+  menuIcon,
+  registrationsIcon,
+} from "~/assets/icons";
 
-interface LayoutPageProps {
+import S from "./styles";
+
+interface LayoutProps {
   children: ReactNode;
 }
 
-const LayoutPage: FC<LayoutPageProps> = ({ children }): ReactElement => {
+const App: FC<LayoutProps> = ({ children }): ReactElement => {
+  const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
 
   const itemsMenu: MenuProps["items"] = [
     {
       key: "1",
-      icon: <HomeOutlined />,
-      label: "Home",
+      icon: <Image src={homeIcon} />,
+      label: "Inicio",
       onClick: () => router.push("/"),
     },
     {
       key: "2",
-      icon: <UserOutlined />,
-      label: "Usuários",
-      onClick: () => router.push("/usuarios"),
+      icon: <Image src={registrationsIcon} />,
+      label: "Cadastros",
+      children: [
+        {
+          key: "3",
+          label: "Usuários",
+          onClick: () => router.push("/usuarios"),
+          className: "ant-submenu",
+        },
+        {
+          key: "4",
+          label: "Clientes",
+          onClick: () => router.push("/"),
+          className: "ant-submenu",
+        },
+        {
+          key: "5",
+          label: "Produtos",
+          onClick: () => router.push("/"),
+          className: "ant-submenu",
+        },
+      ],
     },
     {
-      key: "3",
-      icon: <ShoppingCartOutlined />,
-      label: "Produtos",
-      onClick: () => router.push("/produtos"),
+      key: "6",
+      icon: <Image src={budgetIcon} />,
+      label: "Orçamentos",
+      onClick: () => router.push("/"),
     },
   ];
 
   return (
-    <Layout>
-      <Header />
-
-      <Content style={{ padding: "0 50px" }}>
-        <S.Layout>
-          <Sider width={200}>
-            <Menu
-              mode="inline"
-              defaultSelectedKeys={["1"]}
-              defaultOpenKeys={["sub1"]}
-              style={{ height: "100%" }}
-              items={itemsMenu}
-            />
-          </Sider>
-          <Content style={{ padding: "0 24px", minHeight: 280 }}>
-            {children}
-          </Content>
-        </S.Layout>
-      </Content>
-
-      <Footer />
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider
+        collapsible
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+      >
+        <div className="demo-logo-vertical" />
+        <S.Menu
+          theme="dark"
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={itemsMenu}
+        />
+      </Sider>
+      <Layout>
+        <Header />
+        <Content style={{ margin: "0 16px" }}>{children}</Content>
+        <Footer style={{ textAlign: "center" }}>
+          Ant Design ©{new Date().getFullYear()} Created by Ant UED
+        </Footer>
+      </Layout>
     </Layout>
   );
 };
 
-export default LayoutPage;
+export default App;
