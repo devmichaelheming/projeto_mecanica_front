@@ -149,4 +149,6 @@ export default createGlobalStyle`
     background: rgba(255, 255, 255, .2);
     border-radius: 6px;
   }
+
+
 `;

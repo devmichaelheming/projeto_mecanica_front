@@ -1,10 +1,11 @@
-import { MenuOutlined } from "@ant-design/icons";
 import { api } from "~/utils/services/api";
 import type { MenuProps } from "antd";
 import { Dropdown, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React, { FC, ReactElement } from "react";
 import { useQuery } from "react-query";
+import MenuIcon from "~/assets/icons/menuIcon.svg";
+import Image from "next/image";
 interface DataType {
   key: React.Key;
   name: string;
@@ -59,7 +60,7 @@ const Lista: FC = (): ReactElement => {
       width: 100,
       render: () => (
         <Dropdown menu={{ items }} trigger={["click"]}>
-          <MenuOutlined />
+          <Image src={MenuIcon} style={{ cursor: "pointer" }} />
         </Dropdown>
       ),
     },
