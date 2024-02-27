@@ -1,15 +1,18 @@
-import S from "~/styles/styles";
-import { Breadcrumb } from "antd";
+import Breadcrumb from "~/components/Breadcrumb";
 import type { NextPage } from "next";
+
+const BreadcrumbData = [
+  {
+    id: "1",
+    title: "Home",
+    href: "/",
+  },
+];
 
 const Home: NextPage = () => {
   return (
     <>
-      <Breadcrumb style={{ margin: "16px 0" }}>
-        <Breadcrumb.Item>
-          <a href="/">Home</a>
-        </Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb data={BreadcrumbData} />
 
       <h3>Página Home</h3>
     </>

@@ -1,28 +1,30 @@
-import { Card, Link } from "~/components";
-import { Breadcrumb, Button } from "antd";
+import { Card } from "~/components";
+import Breadcrumb from "~/components/Breadcrumb";
+import { Button } from "antd";
 import React, { FC, ReactElement, useState } from "react";
 
 import Form from "../Form";
 import Lista from "../Lista";
+
+const BreadcrumbData = [
+  {
+    id: "1",
+    title: "Home",
+    href: "/",
+  },
+  {
+    id: "2",
+    title: "Produtos",
+    href: "/produtos",
+  },
+];
 
 const Pagina: FC = (): ReactElement => {
   const [isModal, setIsModal] = useState(false);
 
   return (
     <>
-      <Breadcrumb style={{ margin: "16px 0" }}>
-        <Breadcrumb.Item>
-          <Link href="/">
-            <a>Home</a>
-          </Link>
-        </Breadcrumb.Item>
-
-        <Breadcrumb.Item>
-          <Link href="/produtos">
-            <a>Produtos</a>
-          </Link>
-        </Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb data={BreadcrumbData} />
 
       <Card
         title="Listagem de Produtos"

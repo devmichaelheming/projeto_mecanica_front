@@ -1,16 +1,13 @@
-import React, { FC, ReactElement, ReactNode, useState } from "react";
 import type { MenuProps } from "antd";
 import { Layout } from "antd";
-import { useRouter } from "next/router";
-import Header from "./Header";
 import Image from "next/image";
+import { useRouter } from "next/router";
+import React, { FC, ReactElement, ReactNode, useState } from "react";
+
+import Header from "./Header";
+
 const { Content, Footer, Sider } = Layout;
-import {
-  budgetIcon,
-  homeIcon,
-  menuIcon,
-  registrationsIcon,
-} from "~/assets/icons";
+import { budgetIcon, homeIcon, registrationsIcon } from "~/assets/icons";
 
 import S from "./styles";
 
@@ -49,7 +46,7 @@ const App: FC<LayoutProps> = ({ children }): ReactElement => {
         {
           key: "5",
           label: "Produtos",
-          onClick: () => router.push("/"),
+          onClick: () => router.push("/produtos"),
           className: "ant-submenu",
         },
       ],
