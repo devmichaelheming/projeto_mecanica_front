@@ -1,6 +1,4 @@
-import { api } from "~/utils/services/api";
 import { Button, Form, Input, InputNumber, Modal } from "antd";
-import { MaskedInput } from "antd-mask-input";
 import React, {
   Dispatch,
   FC,
@@ -27,18 +25,18 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
   };
 
   const handleSendData = (payload: UsersProps) => {
-    api
-      .post("/users", payload)
-      .then((response) => {
-        setIsLoading(true);
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // api
+    //   .post("/users", payload)
+    //   .then((response) => {
+    //     setIsLoading(true);
+    //     console.log(response);
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
   const handleSubmit = () => {

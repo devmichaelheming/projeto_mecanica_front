@@ -1,10 +1,8 @@
 import LayoutPage from "~/components/Layout";
 import GlobalStyles from "~/styles/GlobalStyles";
-import { queryClient } from "~/utils/services/queryClient";
 import { ConfigProvider } from "antd";
 import type { AppProps } from "next/app";
 import { ReactElement } from "react";
-import { QueryClientProvider } from "react-query";
 
 const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   return (
@@ -15,12 +13,10 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
         },
       }}
     >
-      <QueryClientProvider client={queryClient}>
-        <LayoutPage>
-          <GlobalStyles />
-          <Component {...pageProps} />
-        </LayoutPage>
-      </QueryClientProvider>
+      <LayoutPage>
+        <GlobalStyles />
+        <Component {...pageProps} />
+      </LayoutPage>
     </ConfigProvider>
   );
 };

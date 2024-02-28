@@ -1,10 +1,13 @@
 import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
+import useUsersService from "~/lib/services/users";
 import { Button } from "antd";
 import React, { FC, ReactElement, useState } from "react";
+import useSWR from "swr";
 
 import Form from "../Form";
 import Lista from "../Lista";
+import { UsersProps } from "../models";
 
 const BreadcrumbData = [
   {
@@ -20,7 +23,12 @@ const BreadcrumbData = [
 ];
 
 const Pagina: FC = (): ReactElement => {
+  const service = useUsersService();
   const [isModal, setIsModal] = useState(false);
+
+  const { data, isLoading, mutate } = useSWR("/users", async () =>
+    service.get()
+  );
 
   return (
     <>
@@ -34,10 +42,10 @@ const Pagina: FC = (): ReactElement => {
           </Button>
         }
       >
-        <Lista />
+        <Lista data={data || []} isLoading={isLoading} mutate={mutate} />
       </Card>
 
-      <Form isModal={isModal} setIsModal={setIsModal} />
+      <Form isModal={isModal} setIsModal={setIsModal} mutate={mutate} />
     </>
   );
 };
