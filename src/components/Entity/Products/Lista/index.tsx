@@ -1,10 +1,10 @@
 import { MenuOutlined } from "@ant-design/icons";
-import { api } from "~/utils/services/api";
+import useProductsService from "~/lib/services/products";
 import type { MenuProps } from "antd";
 import { Dropdown, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React, { FC, ReactElement } from "react";
-import { useQuery } from "react-query";
+import useSWR from "swr";
 interface DataType {
   key: React.Key;
   name: string;
@@ -12,17 +12,9 @@ interface DataType {
 }
 
 const Lista: FC = (): ReactElement => {
-  const { data, isLoading } = useQuery(
-    "products",
-    async () => {
-      const response = await api.get("/products");
+  const service = useProductsService();
 
-      return response.data;
-    },
-    {
-      staleTime: 1000 * 60, // 1 minute
-    }
-  );
+  const { data, isLoading } = useSWR("/products", async () => service.get());
 
   const items: MenuProps["items"] = [
     {

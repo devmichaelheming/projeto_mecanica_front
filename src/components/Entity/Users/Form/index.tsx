@@ -1,4 +1,4 @@
-import { api } from "~/utils/services/api";
+import useUsersService from "~/lib/services/users";
 import { Button, Form, Input, message, Modal } from "antd";
 import { MaskedInput } from "antd-mask-input";
 import React, {
@@ -15,10 +15,16 @@ import { validateMessages } from "./validationsMessages";
 interface FormProps {
   isModal: boolean;
   setIsModal: Dispatch<SetStateAction<boolean>>;
+  mutate: () => void;
 }
 
-const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
+const FormPage: FC<FormProps> = ({
+  isModal,
+  setIsModal,
+  mutate,
+}): ReactElement => {
   const [form] = Form.useForm<UsersProps>();
+  const service = useUsersService();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancelModal = () => {
@@ -26,28 +32,27 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
     setIsModal(false);
   };
 
-  const handleSendData = (payload: UsersProps) => {
-    setIsLoading(true);
-    api
-      .post("/users", payload)
-      .then((response) => {
-        setIsLoading(false);
+  const handleSendData = async (payload: UsersProps) => {
+    try {
+      setIsLoading(true);
+      const resposta = await service.salvar(payload);
 
-        setTimeout(() => {
-          handleCancelModal();
-        }, 500);
-
-        message.open({
-          type: "success",
-          content: response.data.message,
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      })
-      .finally(() => {
+      if (resposta.sucesso) {
+        mutate();
         setIsLoading(false);
-      });
+        handleCancelModal();
+        message.success("Dados salvos com sucesso!");
+        return false;
+      }
+
+      setIsLoading(false);
+      message.success("Dados salvos com sucesso!");
+
+      return true;
+    } catch (ex: any) {
+      message.error(ex || "Erro ao salvar os dados");
+      return false;
+    }
   };
 
   const handleSubmit = () => {

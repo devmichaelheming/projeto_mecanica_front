@@ -38,6 +38,7 @@
     "no-console": 0,
     "no-shadow": 1,
     "import/prefer-default-export": 0,
+    "no-undef": "off",
     "react/function-component-definition": [
       2,
       {
