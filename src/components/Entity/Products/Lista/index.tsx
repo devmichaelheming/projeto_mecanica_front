@@ -1,71 +1,45 @@
-import { MenuOutlined } from "@ant-design/icons";
 import useProductsService from "~/lib/services/products";
-import type { MenuProps } from "antd";
-import { Dropdown, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
+import { message } from "antd";
+import { Table } from "antd";
 import React, { FC, ReactElement } from "react";
-import useSWR from "swr";
-interface DataType {
-  key: React.Key;
-  name: string;
-  email: string;
+
+import { ProductProps } from "../models";
+import { ColunasTabela } from "./columns";
+
+interface ListaProps {
+  data: Array<ProductProps>;
+  isLoading: boolean;
+  mutate: () => void;
 }
 
-const Lista: FC = (): ReactElement => {
+const Lista: FC<ListaProps> = ({ data, isLoading, mutate }): ReactElement => {
   const service = useProductsService();
 
-  const { data, isLoading } = useSWR("/products", async () => service.get());
+  const onExcluir = async (registro: ProductProps) => {
+    try {
+      const resposta = await service.del(registro._id);
 
-  const items: MenuProps["items"] = [
-    {
-      label: "Editar",
-      key: "1",
-    },
-    {
-      label: "Excluir",
-      key: "2",
-    },
-  ];
+      console.log("resposta", resposta);
 
-  const columns: ColumnsType<DataType> = [
-    {
-      title: "Nome",
-      width: 100,
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
-    },
-    {
-      title: "Descrição",
-      width: 100,
-      dataIndex: "description",
-      key: "description",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "Valor",
-      width: 100,
-      dataIndex: "value",
-      key: "value",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "Ações",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-      render: () => (
-        <Dropdown menu={{ items }} trigger={["click"]}>
-          <MenuOutlined />
-        </Dropdown>
-      ),
-    },
-  ];
+      // if (resposta) {
+      //   message.success(resposta.message);
+      //   mutate();
+      //   return;
+      // }
+
+      message.success("Ocorreu um erro ao tentar excluir o usuário.");
+    } catch (ex: any) {
+      message.error(ex || "error");
+    }
+  };
 
   return (
-    <Table bordered columns={columns} loading={isLoading} dataSource={data} />
+    <Table
+      bordered
+      columns={ColunasTabela({ onExcluir })}
+      loading={isLoading}
+      dataSource={data}
+    />
   );
 };
 

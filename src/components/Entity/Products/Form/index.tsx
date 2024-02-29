@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 
-import { UsersProps } from "../models";
+import { ProductProps } from "../models";
 
 interface FormProps {
   isModal: boolean;
@@ -15,7 +15,7 @@ interface FormProps {
 }
 
 const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
-  const [form] = Form.useForm<UsersProps>();
+  const [form] = Form.useForm<ProductProps>();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleCancelModal = () => {
@@ -24,7 +24,7 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
     console.log("reset");
   };
 
-  const handleSendData = (payload: UsersProps) => {
+  const handleSendData = (payload: ProductProps) => {
     // api
     //   .post("/users", payload)
     //   .then((response) => {
