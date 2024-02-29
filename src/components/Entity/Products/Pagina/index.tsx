@@ -1,7 +1,9 @@
 import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
+import useProductsService from "~/lib/services/products";
 import { Button } from "antd";
 import React, { FC, ReactElement, useState } from "react";
+import useSWR from "swr";
 
 import Form from "../Form";
 import Lista from "../Lista";
@@ -20,7 +22,12 @@ const BreadcrumbData = [
 ];
 
 const Pagina: FC = (): ReactElement => {
+  const service = useProductsService();
   const [isModal, setIsModal] = useState(false);
+
+  const { data, isLoading, mutate } = useSWR("/products", async () =>
+    service.get()
+  );
 
   return (
     <>
@@ -34,7 +41,7 @@ const Pagina: FC = (): ReactElement => {
           </Button>
         }
       >
-        <Lista />
+        <Lista data={data || []} isLoading={isLoading} mutate={mutate} />
       </Card>
 
       <Form isModal={isModal} setIsModal={setIsModal} />

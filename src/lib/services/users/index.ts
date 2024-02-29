@@ -1,6 +1,6 @@
 import { UsersProps } from "~/components/Entity/Users/models";
 import useAxios from "~/lib/hooks/useAxios";
-import { Response } from "~/types/response";
+import { Response } from "~/types/Response";
 
 type FiltroType = () => Promise<Array<UsersProps>>;
 
