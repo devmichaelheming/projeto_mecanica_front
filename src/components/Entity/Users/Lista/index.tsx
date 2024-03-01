@@ -8,32 +8,20 @@ import { ColunasTabela } from "./columns";
 interface ListaProps {
   data: Array<UsersProps>;
   isLoading: boolean;
-  mutate: () => void;
+  onExcluir: (registro: UsersProps) => void;
+  onEditar: (registro: UsersProps) => void;
 }
 
-const Lista: FC<ListaProps> = ({ data, isLoading, mutate }): ReactElement => {
-  const service = useUsersService();
-
-  const onExcluir = async (registro: UsersProps) => {
-    try {
-      const resposta = await service.del(registro._id);
-
-      if (resposta.sucesso) {
-        message.success(resposta.message);
-        mutate();
-        return;
-      }
-
-      message.success("Ocorreu um erro ao tentar excluir o usuário.");
-    } catch (ex: any) {
-      message.error(ex || "error");
-    }
-  };
-
+const Lista: FC<ListaProps> = ({
+  data,
+  isLoading,
+  onEditar,
+  onExcluir,
+}): ReactElement => {
   return (
     <Table
       bordered
-      columns={ColunasTabela({ onExcluir })}
+      columns={ColunasTabela({ onExcluir, onEditar })}
       loading={isLoading}
       dataSource={data}
     />

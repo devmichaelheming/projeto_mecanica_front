@@ -21,7 +21,6 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
   const handleCancelModal = () => {
     form.resetFields();
     setIsModal(false);
-    console.log("reset");
   };
 
   const handleSendData = (payload: ProductProps) => {
