@@ -18,27 +18,18 @@ export const ColunasTabela = ({
   const colunasSetor: ColumnsType = [
     {
       title: "Nome",
-      width: "30%",
+      width: "45%",
       dataIndex: "name",
       key: "name",
       fixed: "left",
     },
     {
-      title: "E-Mail",
-      width: "30%",
-      dataIndex: "email",
-      key: "email",
+      title: "CPF",
+      width: "45%",
+      dataIndex: "cpf",
+      key: "cpf",
       fixed: "left",
       sorter: true,
-    },
-    {
-      title: "Usuário ativo",
-      width: "30%",
-      dataIndex: "active",
-      key: "active",
-      fixed: "left",
-      sorter: true,
-      render: (registro) => (registro ? "Sim" : "Não"),
     },
     {
       title: "Ações",
