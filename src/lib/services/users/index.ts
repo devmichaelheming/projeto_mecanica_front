@@ -13,7 +13,7 @@ type RequisicaoIdRespostaStringType = (id: string) => Promise<Response>;
 export interface ServicoType {
   get: FiltroType;
   post: RequisicaoRegistroRespostaStringType;
-  put: RequisicaoRegistroRespostaStringType;
+  patch: RequisicaoRegistroRespostaStringType;
   del: RequisicaoIdRespostaStringType;
   salvar: RequisicaoRegistroRespostaStringType;
 }
@@ -33,9 +33,9 @@ const useUsersService = (): ServicoType => {
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
-  const put: RequisicaoRegistroRespostaStringType = (registro) =>
+  const patch: RequisicaoRegistroRespostaStringType = (registro) =>
     api
-      .put<Response>(`users/${registro._id}`, registro)
+      .patch<Response>(`users/${registro._id}`, registro)
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
@@ -46,12 +46,12 @@ const useUsersService = (): ServicoType => {
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
   const salvar: RequisicaoRegistroRespostaStringType = (registro) =>
-    registro._id ? put(registro) : post(registro);
+    registro._id ? patch(registro) : post(registro);
 
   return {
     get,
     post,
-    put,
+    patch,
     del,
     salvar,
   };

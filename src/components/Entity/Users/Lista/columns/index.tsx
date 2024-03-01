@@ -8,10 +8,12 @@ import S from "./styles";
 
 interface IColunasAvaliacaoGratuita {
   onExcluir: (registro: UsersProps) => void;
+  onEditar: (registro: UsersProps) => void;
 }
 
 export const ColunasTabela = ({
   onExcluir,
+  onEditar,
 }: IColunasAvaliacaoGratuita): any[] => {
   const colunasSetor: ColumnsType = [
     {
@@ -30,6 +32,15 @@ export const ColunasTabela = ({
       sorter: true,
     },
     {
+      title: "Usuário ativo",
+      width: 100,
+      dataIndex: "active",
+      key: "active",
+      fixed: "left",
+      sorter: true,
+      render: (registro) => (registro ? "Sim" : "Não"),
+    },
+    {
       title: "Ações",
       key: "acao",
       width: 88,
@@ -40,20 +51,21 @@ export const ColunasTabela = ({
             key: "1",
             label: (
               <S.BoxActions>
+                <EditOutlined />
+                <span>Editar</span>
+              </S.BoxActions>
+            ),
+            onClick: () => onEditar(record),
+          },
+          {
+            key: "2",
+            label: (
+              <S.BoxActions danger>
                 <DeleteOutlined />
                 <span>Excluir</span>
               </S.BoxActions>
             ),
             onClick: () => onExcluir(record),
-          },
-          {
-            key: "2",
-            label: (
-              <S.BoxActions>
-                <EditOutlined />
-                <span>Editar</span>
-              </S.BoxActions>
-            ),
           },
         ];
 
