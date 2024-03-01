@@ -1,7 +1,9 @@
 import AlertForm from "~/components/AlertForm";
 import Modal from "~/components/Modal";
 import useUsersService from "~/lib/services/users";
-import { Button, Col, Form, Input, message, Row, Switch } from "antd";
+import { removeSpecialCharacters } from "~/lib/utils/_funcoes";
+import { Button, Form, message } from "antd";
+import axios from "axios";
 import React, {
   Dispatch,
   FC,
@@ -10,11 +12,11 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import InputMask from "react-input-mask";
 
 import { UsersProps } from "../models";
-import S from "./styles";
-import { formValidationMessages } from "./validationsMessages";
+import { formValidationMessages } from "./_funcoes";
+import { Contact, Address, GeneralData } from "./Sections";
+
 interface FormProps {
   isModal: boolean;
   setIsModal: Dispatch<SetStateAction<boolean>>;
@@ -32,14 +34,45 @@ const FormPage: FC<FormProps> = ({
 }): ReactElement => {
   const [form] = Form.useForm<UsersProps>();
   const service = useUsersService();
-  const [isLoading, setIsLoading] = useState(false);
   const [listErrors, setListErrors] = useState<Array<string>>([]);
+  const [typePerson, setTypePerson] = useState<"fisica" | "juridica">("fisica");
+  const [listCities, setListCities] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingGetCities, setIsLoadingGetCities] = useState(false);
 
   const handleCancelModal = () => {
     form.resetFields();
     setIsModal(false);
     setListErrors([]);
     setEntity(null);
+  };
+
+  const handleGetCities = async (uf: string) => {
+    setIsLoadingGetCities(true);
+    form.setFieldValue("cidade", null);
+
+    try {
+      const response = await axios.get(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      );
+
+      const cities = response.data || [];
+
+      const formattedCities = cities.map((city) => ({
+        label: city.nome,
+        value: removeSpecialCharacters(city.nome)
+          .toLowerCase()
+          .replace(/\s+/g, "-"),
+      }));
+
+      setListCities(formattedCities);
+      setIsLoadingGetCities(false);
+    } catch (error) {
+      setIsLoadingGetCities(false);
+      throw error;
+    }
   };
 
   const handleSendData = async (payload: UsersProps) => {
@@ -101,14 +134,13 @@ const FormPage: FC<FormProps> = ({
         surname: entity.surname,
         email: entity.email,
         cpf: entity.cpf,
-        active: entity.active,
       });
     }
   }, [entity]);
 
   return (
     <Modal
-      title="Cadastrar Usuário"
+      title="Cadastrar cliente"
       isOpen={isModal}
       onClose={() => handleCancelModal()}
       footer={renderButtonsFooter()}
@@ -123,71 +155,15 @@ const FormPage: FC<FormProps> = ({
           <AlertForm type="warning" errors={listErrors} />
         )}
 
-        <S.Section>
-          <h3>Configurações</h3>
-        </S.Section>
+        <GeneralData typePerson={typePerson} setTypePerson={setTypePerson} />
 
-        <Form.Item name="active" label="Usuário ativo?" initialValue={true}>
-          <Switch defaultChecked />
-        </Form.Item>
+        <Contact />
 
-        <S.Section>
-          <h3>Dados gerais</h3>
-        </S.Section>
-
-        <Row
-          gutter={8}
-          style={{
-            display: "flex",
-            alignItems: "end",
-          }}
-        >
-          <Col span={12}>
-            <Form.Item
-              name="name"
-              label="Nome"
-              rules={[{ required: true }, { max: 100 }, { min: 3 }]}
-            >
-              <Input placeholder="Insira o nome do usuário" />
-            </Form.Item>
-          </Col>
-
-          <Col span={12}>
-            <Form.Item
-              name="surname"
-              label="Sobrenome"
-              rules={[
-                {
-                  required: true,
-                },
-                { max: 100 },
-                { min: 3 },
-              ]}
-            >
-              <Input placeholder="Insira o sobrenome do usuário" />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Form.Item
-          name="email"
-          label="E-mail"
-          rules={[{ required: true }, { max: 200 }, { type: "email" }]}
-        >
-          <Input placeholder="Insira o e-mail do usuário" />
-        </Form.Item>
-
-        <Form.Item name="cpf" label="CPF" rules={[{ required: true }]}>
-          <InputMask mask="999.999.999-9">
-            {(inputProps) => (
-              <Input
-                {...inputProps}
-                id="input-cpf"
-                placeholder="Insira o cpf do usuário"
-              />
-            )}
-          </InputMask>
-        </Form.Item>
+        <Address
+          handleGetCities={handleGetCities}
+          listCities={listCities}
+          isLoadingGetCities={isLoadingGetCities}
+        />
       </Form>
     </Modal>
   );

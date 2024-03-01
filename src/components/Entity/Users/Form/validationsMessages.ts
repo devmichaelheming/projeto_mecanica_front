@@ -1,9 +1,10 @@
-export const validateMessages = {
+export const formValidationMessages = {
   required: "O ${label} é obrigatório!",
   types: {
-    email: "Este não é um e-mail válido!",
+    email: "O ${label} informado é inválido!",
   },
   string: {
-    min: "A senha deve ter no minímo 8 caracteres!",
+    max: "${label} deve ter no máximo ${max} caracteres",
+    min: "${label} deve ter no mínimo ${min} caracteres",
   },
 };

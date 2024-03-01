@@ -40,7 +40,7 @@ const App: FC<LayoutProps> = ({ children }): ReactElement => {
         {
           key: "4",
           label: "Clientes",
-          onClick: () => router.push("/"),
+          onClick: () => router.push("/clientes"),
           className: "ant-submenu",
         },
         {

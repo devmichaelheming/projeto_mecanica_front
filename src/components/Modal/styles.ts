@@ -15,6 +15,8 @@ export const ModalAntd = styled(Modal)`
 
     .ant-modal-body {
       padding: 12px 12px 12px 12px;
+      overflow: auto;
+      max-height: 512px;
     }
 
     .ant-modal-footer {
@@ -22,6 +24,13 @@ export const ModalAntd = styled(Modal)`
       border-top: 1px solid #dadada;
       background: #f3f3f3;
       border-radius: 0px 0px 8px 8px !important;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      bottom: 0;
+      background: #fff;
+      z-index: 99;
     }
   }
 `;
