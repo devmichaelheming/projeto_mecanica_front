@@ -1,3 +1,4 @@
+import { StyleProvider } from "@ant-design/cssinjs";
 import LayoutPage from "~/components/Layout";
 import GlobalStyles from "~/styles/GlobalStyles";
 import { ConfigProvider } from "antd";
@@ -13,10 +14,12 @@ const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
         },
       }}
     >
-      <LayoutPage>
-        <GlobalStyles />
-        <Component {...pageProps} />
-      </LayoutPage>
+      <StyleProvider>
+        <LayoutPage>
+          <GlobalStyles />
+          <Component {...pageProps} />
+        </LayoutPage>
+      </StyleProvider>
     </ConfigProvider>
   );
 };

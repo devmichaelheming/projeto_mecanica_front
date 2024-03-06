@@ -27,6 +27,7 @@ const Modal: FC<ModalProps> = ({
       onCancel={onClose}
       footer={footer}
       width={width}
+      centered
     >
       {children}
     </S.ModalAntd>

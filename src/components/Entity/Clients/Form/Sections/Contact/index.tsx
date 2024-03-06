@@ -1,10 +1,22 @@
-import { Col, Form, Input, Row, Switch } from "antd";
-import React, { FC, ReactElement } from "react";
+import { Col, Form, FormInstance, Input, Row, Switch } from "antd";
+import React, { FC, ReactElement, useEffect, useState } from "react";
 import InputMask from "react-input-mask";
 
+import { ClientsProps } from "../../../models";
 import S from "../styles";
 
-const Contact: FC = (): ReactElement => {
+interface ContactProps {
+  form: FormInstance<ClientsProps>;
+}
+
+const Contact: FC<ContactProps> = ({ form }): ReactElement => {
+  const [whatsapppSwitch, setWhatsapppSwitch] = useState(false);
+
+  useEffect(() => {
+    form.setFieldsValue({ whatsapp: form.getFieldValue("whatsapp") });
+    setWhatsapppSwitch(form.getFieldValue("whatsapp"));
+  }, [form.getFieldValue("whatsapp")]);
+
   return (
     <>
       <S.Section>
@@ -48,7 +60,22 @@ const Contact: FC = (): ReactElement => {
 
         <Col span={4}>
           <Form.Item name="whatsapp" label="Whatsapp?">
-            <Switch />
+            <Switch
+              checked={form.getFieldValue("whatsapp")}
+              onChange={(e) => {
+                setWhatsapppSwitch(e);
+                form.setFieldsValue({ whatsapp: e ? true : false });
+              }}
+            />
+
+            <span
+              style={{
+                paddingLeft: "6px",
+                fontWeight: 500,
+              }}
+            >
+              {whatsapppSwitch ? "Sim" : "Não"}
+            </span>
           </Form.Item>
         </Col>
       </Row>

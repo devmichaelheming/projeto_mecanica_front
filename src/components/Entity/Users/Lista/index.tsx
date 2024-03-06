@@ -1,5 +1,4 @@
-import useUsersService from "~/lib/services/users";
-import { message, Table } from "antd";
+import { Table } from "antd";
 import React, { FC, ReactElement } from "react";
 
 import { UsersProps } from "../models";
@@ -7,14 +6,14 @@ import { ColunasTabela } from "./columns";
 
 interface ListaProps {
   data: Array<UsersProps>;
-  isLoading: boolean;
+  isValidating: boolean;
   onExcluir: (registro: UsersProps) => void;
   onEditar: (registro: UsersProps) => void;
 }
 
 const Lista: FC<ListaProps> = ({
   data,
-  isLoading,
+  isValidating,
   onEditar,
   onExcluir,
 }): ReactElement => {
@@ -22,7 +21,7 @@ const Lista: FC<ListaProps> = ({
     <Table
       bordered
       columns={ColunasTabela({ onExcluir, onEditar })}
-      loading={isLoading}
+      loading={isValidating}
       dataSource={data}
     />
   );
