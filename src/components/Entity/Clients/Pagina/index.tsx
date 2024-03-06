@@ -1,13 +1,14 @@
 import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
-import useUsersService from "~/lib/services/users";
+import useClientService from "~/lib/services/clients";
 import { Button, message } from "antd";
+import { isArray } from "lodash";
 import React, { FC, ReactElement, useState } from "react";
 import useSWR from "swr";
 
 import Form from "../Form";
 import Lista from "../Lista";
-import { UsersProps } from "../models";
+import { ClientsProps } from "../models";
 
 const BreadcrumbData = [
   {
@@ -23,15 +24,17 @@ const BreadcrumbData = [
 ];
 
 const Pagina: FC = (): ReactElement => {
-  const service = useUsersService();
+  const service = useClientService();
   const [isModal, setIsModal] = useState(false);
-  const [entity, setEntity] = useState<UsersProps>({} as UsersProps);
+  const [entity, setEntity] = useState<ClientsProps>({} as ClientsProps);
 
-  const { data, isLoading, mutate } = useSWR("/clients", async () =>
+  const { data, isValidating, mutate } = useSWR("/clients", async () =>
     service.get()
   );
 
-  const onExcluir = async (registro: UsersProps) => {
+  const listClients = isArray(data) ? data : [];
+
+  const onExcluir = async (registro: ClientsProps) => {
     try {
       const resposta = await service.del(registro._id);
 
@@ -47,7 +50,7 @@ const Pagina: FC = (): ReactElement => {
     }
   };
 
-  const onEditar = async (registro: UsersProps) => {
+  const onEditar = async (registro: ClientsProps) => {
     setIsModal(true);
     setEntity(registro);
   };
@@ -65,8 +68,8 @@ const Pagina: FC = (): ReactElement => {
         }
       >
         <Lista
-          data={data || []}
-          isLoading={isLoading}
+          data={listClients}
+          isValidating={isValidating}
           onExcluir={onExcluir}
           onEditar={onEditar}
         />

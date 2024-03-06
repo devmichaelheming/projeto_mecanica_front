@@ -41,7 +41,7 @@ export const ColunasTabela = ({
       title: "Ações",
       key: "acao",
       width: 88,
-      fixed: "right",
+      align: "center",
       render: (record: ProductProps) => {
         const items: MenuProps["items"] = [
           {

@@ -1,9 +1,7 @@
 import AlertForm from "~/components/AlertForm";
 import Modal from "~/components/Modal";
-import useUsersService from "~/lib/services/users";
-import { removeSpecialCharacters } from "~/lib/utils/_funcoes";
+import useClientService from "~/lib/services/clients";
 import { Button, Form, message } from "antd";
-import axios from "axios";
 import React, {
   Dispatch,
   FC,
@@ -13,16 +11,16 @@ import React, {
   useState,
 } from "react";
 
-import { UsersProps } from "../models";
+import { ClientsProps } from "../models";
 import { formValidationMessages } from "./_funcoes";
-import { Contact, Address, GeneralData } from "./Sections";
+import { Contact, Address, GeneralData, Vehicle } from "./Sections";
 
 interface FormProps {
   isModal: boolean;
   setIsModal: Dispatch<SetStateAction<boolean>>;
   mutate: () => void;
-  entity: UsersProps;
-  setEntity: Dispatch<SetStateAction<UsersProps>>;
+  entity: ClientsProps;
+  setEntity: Dispatch<SetStateAction<ClientsProps>>;
 }
 
 const FormPage: FC<FormProps> = ({
@@ -32,80 +30,46 @@ const FormPage: FC<FormProps> = ({
   entity,
   setEntity,
 }): ReactElement => {
-  const [form] = Form.useForm<UsersProps>();
-  const service = useUsersService();
+  const [form] = Form.useForm<ClientsProps>();
+  const service = useClientService();
   const [listErrors, setListErrors] = useState<Array<string>>([]);
   const [typePerson, setTypePerson] = useState<"fisica" | "juridica">("fisica");
-  const [listCities, setListCities] = useState<
-    Array<{ label: string; value: string }>
-  >([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingGetCities, setIsLoadingGetCities] = useState(false);
 
   const handleCancelModal = () => {
-    form.resetFields();
     setIsModal(false);
     setListErrors([]);
     setEntity(null);
+    setIsLoading(false);
   };
 
-  const handleGetCities = async (uf: string) => {
-    setIsLoadingGetCities(true);
-    form.setFieldValue("cidade", null);
-
-    try {
-      const response = await axios.get(
-        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
-      );
-
-      const cities = response.data || [];
-
-      const formattedCities = cities.map((city) => ({
-        label: city.nome,
-        value: removeSpecialCharacters(city.nome)
-          .toLowerCase()
-          .replace(/\s+/g, "-"),
-      }));
-
-      setListCities(formattedCities);
-      setIsLoadingGetCities(false);
-    } catch (error) {
-      setIsLoadingGetCities(false);
-      throw error;
-    }
-  };
-
-  const handleSendData = async (payload: UsersProps) => {
-    try {
+  const handleSendData = async () => {
+    form.validateFields().then(async (values: ClientsProps) => {
       setIsLoading(true);
-      const resposta = await service.salvar({ ...payload, _id: entity._id });
+      const payload = { ...values, typePerson: typePerson, _id: entity?._id };
 
-      if (!resposta.sucesso) {
-        setListErrors(resposta.errors);
-        setIsLoading(false);
-        return;
+      try {
+        const resposta = await service.salvar(payload);
+
+        if (!resposta.sucesso) {
+          setListErrors(resposta.errors);
+          setIsLoading(false);
+          return;
+        }
+
+        handleCancelModal();
+        mutate();
+        message.success(
+          entity?._id
+            ? "Cliente atualizado com sucesso!"
+            : "Cliente cadastrado com sucesso!"
+        );
+
+        return true;
+      } catch (ex: any) {
+        message.error(ex || "Erro ao salvar os dados");
+        return false;
       }
-
-      mutate();
-      setIsLoading(false);
-      handleCancelModal();
-      setListErrors([]);
-      message.success(
-        entity?._id
-          ? "Dados atualizados com sucesso!"
-          : "Dados salvos com sucesso!"
-      );
-
-      return true;
-    } catch (ex: any) {
-      message.error(ex || "Erro ao salvar os dados");
-      return false;
-    }
-  };
-
-  const handleSubmit = () => {
-    form.validateFields().then((values) => {
-      handleSendData(values);
     });
   };
 
@@ -118,7 +82,7 @@ const FormPage: FC<FormProps> = ({
 
         <Button
           type="primary"
-          onClick={() => handleSubmit()}
+          onClick={() => handleSendData()}
           loading={isLoading}
         >
           {entity?._id ? "Atualizar" : "Cadastrar"}
@@ -128,13 +92,29 @@ const FormPage: FC<FormProps> = ({
   };
 
   useEffect(() => {
-    if (entity) {
+    if (entity?._id) {
+      setTypePerson(entity.typePerson === "fisica" ? "fisica" : "juridica");
+
       form.setFieldsValue({
+        tipoDocumento: entity.typePerson,
+        cpf: entity.cpf,
+        cnpj: entity.cnpj,
         name: entity.name,
         surname: entity.surname,
+        razaoSocial: entity.razaoSocial,
+        nomeFantasia: entity.nomeFantasia,
         email: entity.email,
-        cpf: entity.cpf,
+        cellPhone: entity.cellPhone,
+        whatsapp: entity.whatsapp,
+        cep: entity.cep,
+        rua: entity.rua,
+        numero: entity.numero,
+        bairro: entity.bairro,
+        estado: entity.estado,
+        cidade: entity.cidade,
       });
+    } else {
+      form.resetFields();
     }
   }, [entity]);
 
@@ -144,6 +124,7 @@ const FormPage: FC<FormProps> = ({
       isOpen={isModal}
       onClose={() => handleCancelModal()}
       footer={renderButtonsFooter()}
+      width={700}
     >
       <Form
         form={form}
@@ -157,13 +138,11 @@ const FormPage: FC<FormProps> = ({
 
         <GeneralData typePerson={typePerson} setTypePerson={setTypePerson} />
 
-        <Contact />
+        <Contact form={form} />
 
-        <Address
-          handleGetCities={handleGetCities}
-          listCities={listCities}
-          isLoadingGetCities={isLoadingGetCities}
-        />
+        <Address form={form} />
+
+        <Vehicle />
       </Form>
     </Modal>
   );

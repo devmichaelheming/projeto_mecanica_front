@@ -1,26 +1,94 @@
-import { Col, Form, Input, Radio, Row, Select } from "antd";
-import React, { FC, ReactElement } from "react";
+import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
+import { removeSpecialCharacters } from "~/lib/utils/_funcoes";
+import { Col, Form, Input, message, Row, Select, Spin } from "antd";
+import axios from "axios";
+import { FormInstance } from "rc-field-form";
+import React, { FC, ReactElement, useState } from "react";
 import InputMask from "react-input-mask";
 
 import { ufList } from "../../_funcoes";
-import S from "../styles";
+import { ClientsProps } from "../../../models";
+import { Section } from "../styles";
+import S from "./styles";
 
 interface AddressProps {
-  handleGetCities: (city: string) => void;
-  listCities: Array<{ label: string; value: string }>;
-  isLoadingGetCities: boolean;
+  form: FormInstance<ClientsProps>;
 }
 
-const Address: FC<AddressProps> = ({
-  handleGetCities,
-  listCities,
-  isLoadingGetCities,
-}): ReactElement => {
+const Address: FC<AddressProps> = ({ form }): ReactElement => {
+  const [isLoadingGetCities, setIsLoadingGetCities] = useState(false);
+  const [isLoadingGetCep, setIsLoadingGetCep] = useState(false);
+  const [listCities, setListCities] = useState<
+    Array<{ label: string; value: string }>
+  >([]);
+
+  const handleGetCities = async (uf: string) => {
+    setIsLoadingGetCities(true);
+    form.setFieldValue("cidade", null);
+
+    try {
+      const response = await axios.get(
+        `https://servicodados.ibge.gov.br/api/v1/localidades/estados/${uf}/municipios`
+      );
+
+      const cities = response.data || [];
+
+      const formattedCities = cities.map((city) => ({
+        label: city.nome,
+        value: removeSpecialCharacters(city.nome)
+          .toLowerCase()
+          .replace(/\s+/g, "-"),
+      }));
+
+      setListCities(formattedCities);
+      setIsLoadingGetCities(false);
+    } catch (error) {
+      setIsLoadingGetCities(false);
+      throw error;
+    }
+  };
+
+  const handleGetAddress = async () => {
+    const cep = form.getFieldValue("cep");
+
+    if (cep && cep.length === 9) {
+      setIsLoadingGetCep(true);
+
+      try {
+        const response = await axios.get(
+          `https://viacep.com.br/ws/${cep}/json/`
+        );
+
+        const address = response.data || [];
+
+        console.log("address", address);
+
+        if (address.erro) {
+          message.error("CEP não encontrado, tenta novamente!");
+          setIsLoadingGetCep(false);
+          return;
+        }
+
+        form.setFieldsValue({
+          rua: address.logradouro,
+          bairro: address.bairro,
+          estado: address.uf,
+          cidade: address.localidade,
+        });
+
+        setIsLoadingGetCep(false);
+      } catch (error) {
+        setIsLoadingGetCep(false);
+        throw error;
+      }
+    }
+  };
+
   return (
     <>
-      <S.Section>
+      <Section>
         <h3>Endereço</h3>
-      </S.Section>
+      </Section>
       <Row
         gutter={8}
         style={{
@@ -28,7 +96,7 @@ const Address: FC<AddressProps> = ({
           alignItems: "end",
         }}
       >
-        <Col span={12}>
+        <Col span={10}>
           <Form.Item name="cep" label="CEP" rules={[{ required: true }]}>
             <InputMask mask="99999-999">
               {(inputProps) => (
@@ -40,6 +108,28 @@ const Address: FC<AddressProps> = ({
               )}
             </InputMask>
           </Form.Item>
+        </Col>
+
+        <Col span={2}>
+          <div
+            style={{ display: "flex", height: "80px", alignItems: "center" }}
+          >
+            <S.ButtonCep
+              type="button"
+              onClick={() => handleGetAddress()}
+              disabled={isLoadingGetCep}
+            >
+              {isLoadingGetCep ? (
+                <Spin
+                  indicator={<LoadingOutlined />}
+                  style={{ fontSize: 8 }}
+                  spinning
+                />
+              ) : (
+                <SearchOutlined />
+              )}
+            </S.ButtonCep>
+          </div>
         </Col>
 
         <Col span={12}>

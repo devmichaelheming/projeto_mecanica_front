@@ -2,6 +2,7 @@ import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
 import useUsersService from "~/lib/services/users";
 import { Button, message } from "antd";
+import { isArray } from "lodash";
 import React, { FC, ReactElement, useState } from "react";
 import useSWR from "swr";
 
@@ -27,9 +28,11 @@ const Pagina: FC = (): ReactElement => {
   const [isModal, setIsModal] = useState(false);
   const [entity, setEntity] = useState<UsersProps>({} as UsersProps);
 
-  const { data, isLoading, mutate } = useSWR("/users", async () =>
+  const { data, isValidating, mutate } = useSWR("/users", async () =>
     service.get()
   );
+
+  const listUsers = isArray(data) ? data : [];
 
   const onExcluir = async (registro: UsersProps) => {
     try {
@@ -65,8 +68,8 @@ const Pagina: FC = (): ReactElement => {
         }
       >
         <Lista
-          data={data || []}
-          isLoading={isLoading}
+          data={listUsers}
+          isValidating={isValidating}
           onExcluir={onExcluir}
           onEditar={onEditar}
         />

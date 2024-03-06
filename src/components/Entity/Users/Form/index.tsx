@@ -178,7 +178,7 @@ const FormPage: FC<FormProps> = ({
         </Form.Item>
 
         <Form.Item name="cpf" label="CPF" rules={[{ required: true }]}>
-          <InputMask mask="999.999.999-9">
+          <InputMask mask="999.999.999-99">
             {(inputProps) => (
               <Input
                 {...inputProps}

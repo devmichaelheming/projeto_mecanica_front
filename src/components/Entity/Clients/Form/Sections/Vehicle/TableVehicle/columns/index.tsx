@@ -3,12 +3,11 @@ import { Dropdown, MenuProps } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 
-import { ClientsProps } from "../../models";
 import S from "./styles";
 
 interface IColunasAvaliacaoGratuita {
-  onExcluir: (registro: ClientsProps) => void;
-  onEditar: (registro: ClientsProps) => void;
+  onExcluir: (registro: any) => void;
+  onEditar: (registro: any) => void;
 }
 
 export const ColunasTabela = ({
@@ -17,46 +16,42 @@ export const ColunasTabela = ({
 }: IColunasAvaliacaoGratuita): any[] => {
   const colunasSetor: ColumnsType = [
     {
-      title: "Nome/Razão social",
-      width: "25%",
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
-      render: (data: string, registro: ClientsProps) =>
-        registro.razaoSocial ? registro.razaoSocial : registro.name,
-    },
-    {
-      title: "E-Mail",
-      width: "25%",
-      dataIndex: "email",
-      key: "email",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "Telefone",
-      width: "25%",
-      dataIndex: "cellPhone",
-      key: "cellPhone",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "Localidade",
+      title: "Marca",
       width: "20%",
-      dataIndex: "localidade",
-      key: "localidade",
+      dataIndex: "brand",
+      key: "brand",
       fixed: "left",
-      render: (data: string, registro: ClientsProps) => {
-        return `${registro.cidade} - ${registro.estado}`;
-      },
+    },
+    {
+      title: "Modelo",
+      width: "20%",
+      dataIndex: "model",
+      key: "model",
+      fixed: "left",
+      sorter: true,
+    },
+    {
+      title: "Ano de fabricação",
+      width: "30%",
+      dataIndex: "yearOfManufacture",
+      key: "yearOfManufacture",
+      fixed: "left",
+      sorter: true,
+    },
+    {
+      title: "Placa",
+      width: "20%",
+      dataIndex: "plate",
+      key: "plate",
+      fixed: "left",
+      sorter: true,
     },
     {
       title: "Ações",
       key: "acao",
-      width: "15%",
+      width: "10%",
       align: "center",
-      render: (record: ClientsProps) => {
+      render: (record: any) => {
         const items: MenuProps["items"] = [
           {
             key: "1",

@@ -2,6 +2,7 @@ import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
 import useProductsService from "~/lib/services/products";
 import { Button } from "antd";
+import { isArray } from "lodash";
 import React, { FC, ReactElement, useState } from "react";
 import useSWR from "swr";
 
@@ -25,9 +26,11 @@ const Pagina: FC = (): ReactElement => {
   const service = useProductsService();
   const [isModal, setIsModal] = useState(false);
 
-  const { data, isLoading, mutate } = useSWR("/products", async () =>
+  const { data, isValidating, mutate } = useSWR("/products", async () =>
     service.get()
   );
+
+  const listProducts = isArray(data) ? data : [];
 
   return (
     <>
@@ -41,7 +44,11 @@ const Pagina: FC = (): ReactElement => {
           </Button>
         }
       >
-        <Lista data={data || []} isLoading={isLoading} mutate={mutate} />
+        <Lista
+          data={listProducts}
+          isValidating={isValidating}
+          mutate={mutate}
+        />
       </Card>
 
       <Form isModal={isModal} setIsModal={setIsModal} />
