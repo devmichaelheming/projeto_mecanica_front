@@ -12,14 +12,12 @@ import { UsersProps } from "../models";
 
 const BreadcrumbData = [
   {
-    id: "1",
     title: "Home",
-    href: "/",
+    link: "/",
   },
   {
-    id: "2",
     title: "Usuários",
-    href: "/usuarios",
+    link: "/usuarios",
   },
 ];
 
@@ -36,7 +34,7 @@ const Pagina: FC = (): ReactElement => {
 
   const onExcluir = async (registro: UsersProps) => {
     try {
-      const resposta = await service.del(registro._id);
+      const resposta = await service.del(registro.id);
 
       if (resposta.sucesso) {
         message.success(resposta.message);

@@ -1,7 +1,7 @@
 import AlertForm from "~/components/AlertForm";
 import Modal from "~/components/Modal";
 import useClientService from "~/lib/services/clients";
-import { Button, Form, message } from "antd";
+import { Button, Form, message, Modal as ModalAntd } from "antd";
 import React, {
   Dispatch,
   FC,
@@ -11,7 +11,7 @@ import React, {
   useState,
 } from "react";
 
-import { ClientsProps } from "../models";
+import { ClientsProps, VehiclesProps } from "../models";
 import { formValidationMessages } from "./_funcoes";
 import { Contact, Address, GeneralData, Vehicle } from "./Sections";
 
@@ -21,6 +21,8 @@ interface FormProps {
   mutate: () => void;
   entity: ClientsProps;
   setEntity: Dispatch<SetStateAction<ClientsProps>>;
+  typeForm: "edit" | "new";
+  setTypeForm: Dispatch<SetStateAction<"edit" | "new">>;
 }
 
 const FormPage: FC<FormProps> = ({
@@ -29,24 +31,47 @@ const FormPage: FC<FormProps> = ({
   mutate,
   entity,
   setEntity,
+  setTypeForm,
+  typeForm,
 }): ReactElement => {
   const [form] = Form.useForm<ClientsProps>();
   const service = useClientService();
   const [listErrors, setListErrors] = useState<Array<string>>([]);
   const [typePerson, setTypePerson] = useState<"fisica" | "juridica">("fisica");
   const [isLoading, setIsLoading] = useState(false);
+  const [listVehicles, setListVehicles] = useState<Array<VehiclesProps>>([]);
 
   const handleCancelModal = () => {
     setIsModal(false);
     setListErrors([]);
     setEntity(null);
     setIsLoading(false);
+    setListVehicles([]);
+    setTypeForm("edit");
+    setTypePerson("fisica");
+  };
+
+  const handleConfirmCancelModal = () => {
+    ModalAntd.confirm({
+      title: "Deseja realmente fechar?",
+      content: "Ao confirmar, as alterações serão descartadas.",
+      centered: true,
+      okText: "Confirmar",
+      onOk: () => {
+        handleCancelModal();
+      },
+    });
   };
 
   const handleSendData = async () => {
     form.validateFields().then(async (values: ClientsProps) => {
       setIsLoading(true);
-      const payload = { ...values, typePerson: typePerson, _id: entity?._id };
+      const payload = {
+        ...values,
+        typePerson: typePerson,
+        id: entity?.id,
+        vehicles: listVehicles,
+      };
 
       try {
         const resposta = await service.salvar(payload);
@@ -60,7 +85,7 @@ const FormPage: FC<FormProps> = ({
         handleCancelModal();
         mutate();
         message.success(
-          entity?._id
+          entity?.id
             ? "Cliente atualizado com sucesso!"
             : "Cliente cadastrado com sucesso!"
         );
@@ -76,7 +101,7 @@ const FormPage: FC<FormProps> = ({
   const renderButtonsFooter = () => {
     return (
       <>
-        <Button type="default" onClick={() => handleCancelModal()}>
+        <Button type="default" onClick={() => handleConfirmCancelModal()}>
           Cancelar
         </Button>
 
@@ -85,14 +110,14 @@ const FormPage: FC<FormProps> = ({
           onClick={() => handleSendData()}
           loading={isLoading}
         >
-          {entity?._id ? "Atualizar" : "Cadastrar"}
+          {entity?.id ? "Atualizar" : "Cadastrar"}
         </Button>
       </>
     );
   };
 
   useEffect(() => {
-    if (entity?._id) {
+    if (typeForm === "edit" && entity?.id) {
       setTypePerson(entity.typePerson === "fisica" ? "fisica" : "juridica");
 
       form.setFieldsValue({
@@ -122,7 +147,7 @@ const FormPage: FC<FormProps> = ({
     <Modal
       title="Cadastrar cliente"
       isOpen={isModal}
-      onClose={() => handleCancelModal()}
+      onClose={() => handleConfirmCancelModal()}
       footer={renderButtonsFooter()}
       width={700}
     >
@@ -142,7 +167,11 @@ const FormPage: FC<FormProps> = ({
 
         <Address form={form} />
 
-        <Vehicle />
+        <Vehicle
+          entity={entity}
+          setListVehicles={setListVehicles}
+          listVehicles={listVehicles}
+        />
       </Form>
     </Modal>
   );

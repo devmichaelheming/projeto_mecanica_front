@@ -12,14 +12,12 @@ import { ClientsProps } from "../models";
 
 const BreadcrumbData = [
   {
-    id: "1",
     title: "Home",
-    href: "/",
+    link: "/",
   },
   {
-    id: "2",
     title: "Clientes",
-    href: "/clientes",
+    link: "/clientes",
   },
 ];
 
@@ -27,6 +25,7 @@ const Pagina: FC = (): ReactElement => {
   const service = useClientService();
   const [isModal, setIsModal] = useState(false);
   const [entity, setEntity] = useState<ClientsProps>({} as ClientsProps);
+  const [typeForm, setTypeForm] = useState<"edit" | "new">("new");
 
   const { data, isValidating, mutate } = useSWR("/clients", async () =>
     service.get()
@@ -36,7 +35,7 @@ const Pagina: FC = (): ReactElement => {
 
   const onExcluir = async (registro: ClientsProps) => {
     try {
-      const resposta = await service.del(registro._id);
+      const resposta = await service.del(registro.id);
 
       if (resposta.sucesso) {
         message.success(resposta.message);
@@ -53,6 +52,12 @@ const Pagina: FC = (): ReactElement => {
   const onEditar = async (registro: ClientsProps) => {
     setIsModal(true);
     setEntity(registro);
+    setTypeForm("edit");
+  };
+
+  const onCadastrar = async () => {
+    setIsModal(true);
+    setTypeForm("new");
   };
 
   return (
@@ -62,7 +67,7 @@ const Pagina: FC = (): ReactElement => {
       <Card
         title="Clientes"
         filtros={
-          <Button type="primary" onClick={() => setIsModal(true)}>
+          <Button type="primary" onClick={onCadastrar}>
             Novo cliente
           </Button>
         }
@@ -81,6 +86,8 @@ const Pagina: FC = (): ReactElement => {
         mutate={mutate}
         entity={entity}
         setEntity={setEntity}
+        typeForm={typeForm}
+        setTypeForm={setTypeForm}
       />
     </>
   );

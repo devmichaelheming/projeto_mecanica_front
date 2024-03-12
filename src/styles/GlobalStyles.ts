@@ -149,4 +149,26 @@ export default createGlobalStyle`
     background: rgba(255, 255, 255, .2);
     border-radius: 6px;
   }
+
+  .ant-tooltip-inner {
+    border-radius: 4px;
+    color: #000000be;
+    background-color: #FFF;
+    box-shadow: 1px 1px 10px #00000075;
+    font-weight: 500;
+    font-family: 'Inter'
+  }
+
+  .ant-tooltip-arrow-content {
+    --antd-arrow-background-color: #FFF;
+    box-shadow: 1px 1px 10px #00000075!important;
+  }
+
+  .ant-btn {
+    border-radius: 4px;
+  }
+
+  .ant-input {
+    border-radius: 4px;
+  }
 `;

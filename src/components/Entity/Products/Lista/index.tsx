@@ -21,9 +21,7 @@ const Lista: FC<ListaProps> = ({
 
   const onExcluir = async (registro: ProductProps) => {
     try {
-      const resposta = await service.del(registro._id);
-
-      console.log("resposta", resposta);
+      const resposta = await service.del(registro.id);
 
       message.success("Ocorreu um erro ao tentar excluir o usuário.");
     } catch (ex: any) {

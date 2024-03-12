@@ -1,6 +1,6 @@
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import { removeSpecialCharacters } from "~/lib/utils/_funcoes";
-import { Col, Form, Input, message, Row, Select, Spin } from "antd";
+import { Col, Form, Input, message, Row, Select, Spin, Tooltip } from "antd";
 import axios from "axios";
 import { FormInstance } from "rc-field-form";
 import React, { FC, ReactElement, useState } from "react";
@@ -61,8 +61,6 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
 
         const address = response.data || [];
 
-        console.log("address", address);
-
         if (address.erro) {
           message.error("CEP não encontrado, tenta novamente!");
           setIsLoadingGetCep(false);
@@ -78,6 +76,10 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
 
         setIsLoadingGetCep(false);
       } catch (error) {
+        message.error(
+          "Ocorreu um erro ao processar a sua solicitação. Por favor, tente novamente mais tarde."
+        );
+
         setIsLoadingGetCep(false);
         throw error;
       }
@@ -114,21 +116,23 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
           <div
             style={{ display: "flex", height: "80px", alignItems: "center" }}
           >
-            <S.ButtonCep
-              type="button"
-              onClick={() => handleGetAddress()}
-              disabled={isLoadingGetCep}
-            >
-              {isLoadingGetCep ? (
-                <Spin
-                  indicator={<LoadingOutlined />}
-                  style={{ fontSize: 8 }}
-                  spinning
-                />
-              ) : (
-                <SearchOutlined />
-              )}
-            </S.ButtonCep>
+            <Tooltip title="BUSCAR CEP">
+              <S.ButtonCep
+                type="button"
+                onClick={() => handleGetAddress()}
+                disabled={isLoadingGetCep}
+              >
+                {isLoadingGetCep ? (
+                  <Spin
+                    indicator={<LoadingOutlined />}
+                    style={{ fontSize: 8 }}
+                    spinning
+                  />
+                ) : (
+                  <SearchOutlined />
+                )}
+              </S.ButtonCep>
+            </Tooltip>
           </div>
         </Col>
 

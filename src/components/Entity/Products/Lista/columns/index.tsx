@@ -1,4 +1,5 @@
 import { MenuOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import MenuActions from "~/components/MenuActions";
 import { Dropdown, MenuProps } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
@@ -43,33 +44,21 @@ export const ColunasTabela = ({
       width: 88,
       align: "center",
       render: (record: ProductProps) => {
-        const items: MenuProps["items"] = [
+        const items = [
           {
-            key: "1",
-            label: (
-              <S.BoxActions>
-                <DeleteOutlined />
-                <span>Excluir</span>
-              </S.BoxActions>
-            ),
-            onClick: () => onExcluir(record),
+            title: "Editar",
+            icon: <EditOutlined />,
+            onClick: () => console.log(record),
           },
           {
-            key: "2",
-            label: (
-              <S.BoxActions>
-                <EditOutlined />
-                <span>Editar</span>
-              </S.BoxActions>
-            ),
+            title: "Excluir",
+            icon: <DeleteOutlined />,
+            onClick: () => onExcluir(record),
+            danger: true,
           },
         ];
 
-        return (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <MenuOutlined />
-          </Dropdown>
-        );
+        return <MenuActions items={items} />;
       },
     },
   ];

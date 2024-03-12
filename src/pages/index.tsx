@@ -3,9 +3,8 @@ import type { NextPage } from "next";
 
 const BreadcrumbData = [
   {
-    id: "1",
     title: "Home",
-    href: "/",
+    link: "/",
   },
 ];
 

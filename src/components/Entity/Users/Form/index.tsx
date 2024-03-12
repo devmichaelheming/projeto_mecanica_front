@@ -45,7 +45,7 @@ const FormPage: FC<FormProps> = ({
   const handleSendData = async (payload: UsersProps) => {
     try {
       setIsLoading(true);
-      const resposta = await service.salvar({ ...payload, _id: entity._id });
+      const resposta = await service.salvar({ ...payload, id: entity.id });
 
       if (!resposta.sucesso) {
         setListErrors(resposta.errors);
@@ -58,7 +58,7 @@ const FormPage: FC<FormProps> = ({
       handleCancelModal();
       setListErrors([]);
       message.success(
-        entity?._id
+        entity?.id
           ? "Dados atualizados com sucesso!"
           : "Dados salvos com sucesso!"
       );
@@ -88,7 +88,7 @@ const FormPage: FC<FormProps> = ({
           onClick={() => handleSubmit()}
           loading={isLoading}
         >
-          {entity?._id ? "Atualizar" : "Cadastrar"}
+          {entity?.id ? "Atualizar" : "Cadastrar"}
         </Button>
       </>
     );

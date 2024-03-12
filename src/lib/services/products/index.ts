@@ -34,7 +34,7 @@ const useProductsService = (): ServicoType => {
 
   const put: RequisicaoRegistroRespostaStringType = (registro) =>
     api
-      .put<Response>(`products/${registro._id}`, registro)
+      .put<Response>(`products/${registro.id}`, registro)
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
@@ -45,7 +45,7 @@ const useProductsService = (): ServicoType => {
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
   const salvar: RequisicaoRegistroRespostaStringType = (registro) =>
-    registro._id ? put(registro) : post(registro);
+    registro.id ? put(registro) : post(registro);
 
   return {
     get,

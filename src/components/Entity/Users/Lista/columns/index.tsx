@@ -1,10 +1,9 @@
-import { MenuOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Dropdown, MenuProps } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import MenuActions from "~/components/MenuActions";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 
 import { UsersProps } from "../../models";
-import S from "./styles";
 
 interface IColunasAvaliacaoGratuita {
   onExcluir: (registro: UsersProps) => void;
@@ -46,34 +45,21 @@ export const ColunasTabela = ({
       width: "10%",
       align: "center",
       render: (record: UsersProps) => {
-        const items: MenuProps["items"] = [
+        const items = [
           {
-            key: "1",
-            label: (
-              <S.BoxActions>
-                <EditOutlined />
-                <span>Editar</span>
-              </S.BoxActions>
-            ),
+            title: "Editar",
+            icon: <EditOutlined />,
             onClick: () => onEditar(record),
           },
           {
-            key: "2",
-            label: (
-              <S.BoxActions danger>
-                <DeleteOutlined />
-                <span>Excluir</span>
-              </S.BoxActions>
-            ),
+            title: "Excluir",
+            icon: <DeleteOutlined />,
             onClick: () => onExcluir(record),
+            danger: true,
           },
         ];
 
-        return (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <MenuOutlined />
-          </Dropdown>
-        );
+        return <MenuActions items={items} />;
       },
     },
   ];
