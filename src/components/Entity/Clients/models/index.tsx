@@ -1,5 +1,17 @@
+export interface VehiclesProps {
+  id?: string;
+  clientId?: string;
+  brand: string;
+  model: string;
+  yearManufacture: string;
+  color: string;
+  plate: string;
+  chassisNumber: string;
+  engineNumber: string;
+}
+
 export interface ClientsProps {
-  _id: string;
+  id: string;
   tipoDocumento?: string;
   typePerson: string;
   cpf: string;
@@ -17,4 +29,5 @@ export interface ClientsProps {
   bairro: string;
   cidade: string;
   estado: string;
+  vehicles: Array<VehiclesProps>;
 }

@@ -35,7 +35,7 @@ const useUsersService = (): ServicoType => {
 
   const patch: RequisicaoRegistroRespostaStringType = (registro) =>
     api
-      .patch<Response>(`users/${registro._id}`, registro)
+      .patch<Response>(`users/${registro.id}`, registro)
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
@@ -46,7 +46,7 @@ const useUsersService = (): ServicoType => {
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
   const salvar: RequisicaoRegistroRespostaStringType = (registro) =>
-    registro._id ? patch(registro) : post(registro);
+    registro.id ? patch(registro) : post(registro);
 
   return {
     get,

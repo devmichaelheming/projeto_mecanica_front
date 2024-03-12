@@ -1,13 +1,12 @@
-import { MenuOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Dropdown, MenuProps } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { VehiclesProps } from "~/components/Entity/Clients/models";
+import MenuActions from "~/components/MenuActions";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 
-import S from "./styles";
-
 interface IColunasAvaliacaoGratuita {
-  onExcluir: (registro: any) => void;
-  onEditar: (registro: any) => void;
+  onExcluir: (registro: VehiclesProps) => void;
+  onEditar: (registro: VehiclesProps) => void;
 }
 
 export const ColunasTabela = ({
@@ -33,8 +32,8 @@ export const ColunasTabela = ({
     {
       title: "Ano de fabricação",
       width: "30%",
-      dataIndex: "yearOfManufacture",
-      key: "yearOfManufacture",
+      dataIndex: "yearManufacture",
+      key: "yearManufacture",
       fixed: "left",
       sorter: true,
     },
@@ -52,34 +51,21 @@ export const ColunasTabela = ({
       width: "10%",
       align: "center",
       render: (record: any) => {
-        const items: MenuProps["items"] = [
+        const items = [
           {
-            key: "1",
-            label: (
-              <S.BoxActions>
-                <EditOutlined />
-                <span>Editar</span>
-              </S.BoxActions>
-            ),
+            title: "Editar",
+            icon: <EditOutlined />,
             onClick: () => onEditar(record),
           },
           {
-            key: "2",
-            label: (
-              <S.BoxActions danger>
-                <DeleteOutlined />
-                <span>Excluir</span>
-              </S.BoxActions>
-            ),
+            title: "Excluir",
+            icon: <DeleteOutlined />,
             onClick: () => onExcluir(record),
+            danger: true,
           },
         ];
 
-        return (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <MenuOutlined />
-          </Dropdown>
-        );
+        return <MenuActions items={items} />;
       },
     },
   ];

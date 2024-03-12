@@ -1,101 +1,138 @@
-import { PlusOutlined } from "@ant-design/icons";
-import AlertForm from "~/components/AlertForm";
+import {
+  ClientsProps,
+  VehiclesProps,
+} from "~/components/Entity/Clients/models";
 import Modal from "~/components/Modal";
-import useUsersService from "~/lib/services/users";
-import { removeSpecialCharacters } from "~/lib/utils/_funcoes";
+import useClientsService from "~/lib/services/clients";
 import {
   Button,
-  Divider,
   Form,
-  InputRef,
-  message,
-  Select,
-  Space,
   Input,
+  Row,
+  Col,
+  DatePicker,
+  Modal as ModalAntd,
+  message,
 } from "antd";
-import axios from "axios";
+import dayjs from "dayjs";
+import _ from "lodash";
 import React, {
   Dispatch,
   FC,
   ReactElement,
   SetStateAction,
   useEffect,
-  useRef,
   useState,
 } from "react";
-
+import InputMask from "react-input-mask";
+import { v4 as uuidv4 } from "uuid";
 interface FormProps {
   isModal: boolean;
   setIsModal: Dispatch<SetStateAction<boolean>>;
+  listVehicles: Array<VehiclesProps>;
+  setListVehicles: Dispatch<SetStateAction<Array<VehiclesProps>>>;
+  entity: ClientsProps;
+  entityVehicle: VehiclesProps;
+  setEntityVehicle: Dispatch<SetStateAction<VehiclesProps>>;
+  mutate: () => void;
 }
 
-const listPlate = [
-  {
-    value: "bmw",
-    label: "BMW",
-  },
-  {
-    value: "byd",
-    label: "BYD",
-  },
-  {
-    value: "chevrolet",
-    label: "Chevrolet",
-  },
-];
-
-const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
-  const [form] = Form.useForm<any>();
-  const service = useUsersService();
-  const [listErrors, setListErrors] = useState<Array<string>>([]);
+const FormPage: FC<FormProps> = ({
+  isModal,
+  setIsModal,
+  listVehicles,
+  setListVehicles,
+  entity,
+  entityVehicle,
+  setEntityVehicle,
+  mutate,
+}): ReactElement => {
+  const [form] = Form.useForm();
+  const service = useClientsService();
   const [isLoading, setIsLoading] = useState(false);
-  const [items, setItems] = useState<Array<{ label: string; value: string }>>(
-    []
-  );
-  const [name, setName] = useState("");
-  const inputRef = useRef<InputRef>(null);
 
   const handleCancelModal = () => {
     form.resetFields();
     setIsModal(false);
-    setListErrors([]);
+    setEntityVehicle(null);
   };
 
-  const handleSendData = async (payload: any) => {
-    // try {
-    //   setIsLoading(true);
-    //   const resposta = await service.salvar({ ...payload, _id: entity._id });
-    //   if (!resposta.sucesso) {
-    //     setListErrors(resposta.errors);
-    //     setIsLoading(false);
-    //     return;
-    //   }
-    //   mutate();
-    //   setIsLoading(false);
-    //   handleCancelModal();
-    //   setListErrors([]);
-    //   message.success(
-    //     entity?._id
-    //       ? "Dados atualizados com sucesso!"
-    //       : "Dados salvos com sucesso!"
-    //   );
-    //   return true;
-    // } catch (ex: any) {
-    //   message.error(ex || "Erro ao salvar os dados");
-    //   return false;
-    // }
+  const handleConfirmCancelModal = () => {
+    ModalAntd.confirm({
+      title: "Deseja realmente fechar?",
+      content: "Ao confirmar, as alterações serão descartadas.",
+      centered: true,
+      okText: "Confirmar",
+      onOk: () => {
+        handleCancelModal();
+      },
+    });
+  };
+
+  const handleSendData = async (payload: VehiclesProps) => {
+    if (_.isEmpty(entity)) {
+      const index = listVehicles.findIndex(
+        (vehicle) => vehicle.brand === entityVehicle?.brand
+      );
+
+      if (index < 0) {
+        const newVehicle = {
+          id: uuidv4(),
+          ...payload,
+        };
+
+        const newListVehicles = [...listVehicles, newVehicle];
+
+        setListVehicles(newListVehicles);
+        handleCancelModal();
+        return;
+      } else {
+        const temp = [...listVehicles];
+
+        temp.splice(index, 1, { id: entityVehicle.id, ...payload });
+
+        setListVehicles(temp);
+        handleCancelModal();
+      }
+    } else {
+      try {
+        const resposta = await service.salvarVehicle({
+          ...payload,
+          id: entityVehicle.id,
+          clientId: entity.id,
+        });
+
+        if (!resposta.sucesso) {
+          setIsLoading(false);
+          return;
+        }
+
+        handleCancelModal();
+        mutate();
+        message.success(
+          entityVehicle?.id
+            ? "Veículo atualizado com sucesso!"
+            : "Veículo cadastrado com sucesso!"
+        );
+      } catch (error) {
+        message.error(error || "Erro ao salvar os dados");
+      }
+    }
   };
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
-      handleSendData(values);
+      handleSendData({
+        ...values,
+        yearManufacture: values.yearManufacture.year().toString(),
+      });
     });
   };
 
   const renderButtonsFooter = () => {
     return (
       <>
-        <Button type="default" onClick={() => handleCancelModal()}>
+        <Button type="default" onClick={() => handleConfirmCancelModal()}>
           Cancelar
         </Button>
 
@@ -104,82 +141,98 @@ const FormPage: FC<FormProps> = ({ isModal, setIsModal }): ReactElement => {
           onClick={() => handleSubmit()}
           loading={isLoading}
         >
-          Cadastrar veículo
+          {entityVehicle?.id ? "Atualizar veículo" : " Cadastrar veículo"}
         </Button>
       </>
     );
   };
 
-  const onNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const addItem = (
-    e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>
-  ) => {
-    // e.preventDefault();
-    console.log("e", e);
-
-    // setItems([...items, name || `New item ${(e += 1)}`]);
-    // setName("");
-    // setTimeout(() => {
-    //   inputRef.current?.focus();
-    // }, 0);
-  };
-
-  // useEffect(() => {
-  //   if (entity) {
-  //     form.setFieldsValue({
-  //       name: entity.name,
-  //       surname: entity.surname,
-  //       email: entity.email,
-  //       cpf: entity.cpf,
-  //     });
-  //   }
-  // }, [entity]);
-
   useEffect(() => {
-    if (listPlate.length > 0) {
-      setItems(listPlate);
+    if (entityVehicle?.id) {
+      form.setFieldsValue({
+        ...entityVehicle,
+        yearManufacture: dayjs(entityVehicle.yearManufacture, "YYYY"),
+      });
     }
-  }, [listPlate]);
+  }, [entityVehicle]);
 
   return (
     <Modal
       title="Cadastro de veículo"
       isOpen={isModal}
-      onClose={() => handleCancelModal()}
+      onClose={() => handleConfirmCancelModal()}
       footer={renderButtonsFooter()}
     >
       <Form form={form} layout="vertical" name="nest-messages">
-        <Select
-          style={{ width: 300 }}
-          placeholder="Informe a placa do veículo"
-          dropdownRender={(menu) => (
-            <>
-              {menu}
-              <Divider style={{ margin: "8px 0" }} />
-              <Space style={{ padding: "0 8px 4px" }}>
-                <Input
-                  placeholder="Insira o nome da placa"
-                  ref={inputRef}
-                  value={name}
-                  onChange={onNameChange}
-                  onKeyDown={(e) => e.stopPropagation()}
-                />
-                <Button
-                  type="text"
-                  icon={<PlusOutlined />}
-                  onClick={addItem}
-                  size="small"
-                >
-                  Adicionar
-                </Button>
-              </Space>
-            </>
-          )}
-          options={items}
-        />
+        <Row gutter={8}>
+          <Col span={8}>
+            <Form.Item name="brand" label="Marca" rules={[{ required: true }]}>
+              <Input placeholder="Insira a marca" />
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item name="model" label="Modelo" rules={[{ required: true }]}>
+              <Input placeholder="Insira o modelo" />
+            </Form.Item>
+          </Col>
+
+          <Col span={8}>
+            <Form.Item
+              name="yearManufacture"
+              label="Ano de fabricação"
+              rules={[{ required: true }]}
+            >
+              <DatePicker
+                picker="year"
+                style={{ width: "100%" }}
+                placeholder="Selecione o ano"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row gutter={8}>
+          <Col span={12}>
+            <Form.Item name="color" label="Cor" rules={[{ required: true }]}>
+              <Input placeholder="Insira a cor" />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item name="plate" label="Placa" rules={[{ required: true }]}>
+              <InputMask mask="aaa-9999">
+                {(inputProps) => (
+                  <Input
+                    {...inputProps}
+                    id="input-plate"
+                    placeholder="Insira a placa"
+                  />
+                )}
+              </InputMask>
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              name="chassisNumber"
+              label="Número do Chassi"
+              rules={[{ required: true }, { min: 17 }]}
+            >
+              <Input placeholder="Insira o número do chassi" maxLength={17} />
+            </Form.Item>
+          </Col>
+
+          <Col span={12}>
+            <Form.Item
+              name="engineNumber"
+              label="Número do motor"
+              rules={[{ required: true }, { min: 6 }]}
+            >
+              <Input placeholder="Insira o número do motor" maxLength={6} />
+            </Form.Item>
+          </Col>
+        </Row>
       </Form>
     </Modal>
   );

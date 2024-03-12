@@ -1,10 +1,10 @@
-import { MenuOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Dropdown, MenuProps } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import MenuActions from "~/components/MenuActions";
+import { handleFormatCnpjCpf } from "~/lib/utils/_funcoes";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 
 import { ClientsProps } from "../../models";
-import S from "./styles";
 
 interface IColunasAvaliacaoGratuita {
   onExcluir: (registro: ClientsProps) => void;
@@ -24,6 +24,15 @@ export const ColunasTabela = ({
       fixed: "left",
       render: (data: string, registro: ClientsProps) =>
         registro.razaoSocial ? registro.razaoSocial : registro.name,
+    },
+    {
+      title: "CPF/CNPJ",
+      width: "25%",
+      dataIndex: "cpfOrCnpj",
+      key: "cpfOrCnpj",
+      fixed: "left",
+      render: (data: string, registro: ClientsProps) =>
+        handleFormatCnpjCpf(registro.cpf || registro.cnpj),
     },
     {
       title: "E-Mail",
@@ -57,34 +66,21 @@ export const ColunasTabela = ({
       width: "15%",
       align: "center",
       render: (record: ClientsProps) => {
-        const items: MenuProps["items"] = [
+        const items = [
           {
-            key: "1",
-            label: (
-              <S.BoxActions>
-                <EditOutlined />
-                <span>Editar</span>
-              </S.BoxActions>
-            ),
+            title: "Editar",
+            icon: <EditOutlined />,
             onClick: () => onEditar(record),
           },
           {
-            key: "2",
-            label: (
-              <S.BoxActions danger>
-                <DeleteOutlined />
-                <span>Excluir</span>
-              </S.BoxActions>
-            ),
+            title: "Excluir",
+            icon: <DeleteOutlined />,
             onClick: () => onExcluir(record),
+            danger: true,
           },
         ];
 
-        return (
-          <Dropdown menu={{ items }} trigger={["click"]}>
-            <MenuOutlined />
-          </Dropdown>
-        );
+        return <MenuActions items={items} />;
       },
     },
   ];

@@ -1,5 +1,5 @@
 export interface UsersProps {
-  _id: string;
+  id: string;
   name: string;
   surname: string;
   email: string;
