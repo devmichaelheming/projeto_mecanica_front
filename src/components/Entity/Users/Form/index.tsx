@@ -1,7 +1,16 @@
 import AlertForm from "~/components/AlertForm";
 import Modal from "~/components/Modal";
 import useUsersService from "~/lib/services/users";
-import { Button, Col, Form, Input, message, Row, Switch } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Row,
+  Switch,
+  Modal as ModalAntd,
+} from "antd";
 import React, {
   Dispatch,
   FC,
@@ -34,75 +43,90 @@ const FormPage: FC<FormProps> = ({
   const service = useUsersService();
   const [isLoading, setIsLoading] = useState(false);
   const [listErrors, setListErrors] = useState<Array<string>>([]);
+  const [disableCpf, setDisableCpf] = useState(false);
+
+  const isEdition = entity?.id ? true : false;
 
   const handleCancelModal = () => {
-    form.resetFields();
     setIsModal(false);
     setListErrors([]);
     setEntity(null);
+    setIsLoading(false);
+    setDisableCpf(false);
   };
 
-  const handleSendData = async (payload: UsersProps) => {
-    try {
-      setIsLoading(true);
-      const resposta = await service.salvar({ ...payload, id: entity.id });
+  const handleConfirmCancelModal = () => {
+    ModalAntd.confirm({
+      title: "Deseja realmente fechar?",
+      content: "Ao confirmar, as alterações serão descartadas.",
+      centered: true,
+      okText: "Confirmar",
+      onOk: () => {
+        handleCancelModal();
+      },
+    });
+  };
 
-      if (!resposta.sucesso) {
-        setListErrors(resposta.errors);
+  const handleSendData = async () => {
+    form.validateFields().then(async (values: UsersProps) => {
+      try {
+        setIsLoading(true);
+
+        const resposta = await service.salvar({
+          ...values,
+          id: entity.id,
+          active: true,
+        });
+
+        if (!resposta.sucesso) {
+          setListErrors(resposta.errors);
+          setIsLoading(false);
+          return;
+        }
+
+        mutate();
+        handleCancelModal();
+        message.success(
+          isEdition
+            ? "Dados atualizados com sucesso!"
+            : "Dados salvos com sucesso!"
+        );
+
+        return true;
+      } catch (ex: any) {
+        message.error(ex || "Erro ao salvar os dados");
         setIsLoading(false);
-        return;
+        return false;
       }
-
-      mutate();
-      setIsLoading(false);
-      handleCancelModal();
-      setListErrors([]);
-      message.success(
-        entity?.id
-          ? "Dados atualizados com sucesso!"
-          : "Dados salvos com sucesso!"
-      );
-
-      return true;
-    } catch (ex: any) {
-      message.error(ex || "Erro ao salvar os dados");
-      return false;
-    }
-  };
-
-  const handleSubmit = () => {
-    form.validateFields().then((values) => {
-      handleSendData(values);
     });
   };
 
   const renderButtonsFooter = () => {
     return (
       <>
-        <Button type="default" onClick={() => handleCancelModal()}>
+        <Button type="default" onClick={() => handleConfirmCancelModal()}>
           Cancelar
         </Button>
 
-        <Button
-          type="primary"
-          onClick={() => handleSubmit()}
-          loading={isLoading}
-        >
-          {entity?.id ? "Atualizar" : "Cadastrar"}
+        <Button type="primary" onClick={handleSendData} loading={isLoading}>
+          {isEdition ? "Atualizar" : "Cadastrar"}
         </Button>
       </>
     );
   };
 
   useEffect(() => {
-    if (entity) {
+    if (isEdition) {
       form.setFieldsValue({
         name: entity.name,
         surname: entity.surname,
         email: entity.email,
         cpf: entity.cpf,
-        active: entity.active,
       });
+
+      setDisableCpf(true);
+    } else {
+      form.resetFields();
     }
   }, [entity]);
 
@@ -110,7 +134,7 @@ const FormPage: FC<FormProps> = ({
     <Modal
       title="Cadastrar Usuário"
       isOpen={isModal}
-      onClose={() => handleCancelModal()}
+      onClose={() => handleConfirmCancelModal()}
       footer={renderButtonsFooter()}
     >
       <Form
@@ -122,18 +146,6 @@ const FormPage: FC<FormProps> = ({
         {listErrors.length > 0 && (
           <AlertForm type="warning" errors={listErrors} />
         )}
-
-        <S.Section>
-          <h3>Configurações</h3>
-        </S.Section>
-
-        <Form.Item name="active" label="Usuário ativo?" initialValue={true}>
-          <Switch defaultChecked />
-        </Form.Item>
-
-        <S.Section>
-          <h3>Dados gerais</h3>
-        </S.Section>
 
         <Row
           gutter={8}
@@ -178,15 +190,19 @@ const FormPage: FC<FormProps> = ({
         </Form.Item>
 
         <Form.Item name="cpf" label="CPF" rules={[{ required: true }]}>
-          <InputMask mask="999.999.999-99">
-            {(inputProps) => (
-              <Input
-                {...inputProps}
-                id="input-cpf"
-                placeholder="Insira o cpf do usuário"
-              />
-            )}
-          </InputMask>
+          {disableCpf ? (
+            <Input disabled />
+          ) : (
+            <InputMask mask="999.999.999-99">
+              {(inputProps) => (
+                <Input
+                  {...inputProps}
+                  id="input-cpf"
+                  placeholder="Insira o cpf do usuário"
+                />
+              )}
+            </InputMask>
+          )}
         </Form.Item>
       </Form>
     </Modal>

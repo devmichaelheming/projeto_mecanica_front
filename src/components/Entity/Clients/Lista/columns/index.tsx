@@ -1,6 +1,10 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import MenuActions from "~/components/MenuActions";
-import { handleFormatCnpjCpf } from "~/lib/utils/_funcoes";
+import MenuActions, { ItemProps } from "~/components/MenuActions";
+import {
+  handleFormatCnpjCpf,
+  handleHideLastDigitsCpfOrCnpj,
+} from "~/lib/utils/_funcoes";
+import { Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
 
@@ -17,8 +21,21 @@ export const ColunasTabela = ({
 }: IColunasAvaliacaoGratuita): any[] => {
   const colunasSetor: ColumnsType = [
     {
+      title: "Status",
+      width: "5%",
+      dataIndex: "active",
+      key: "active",
+      fixed: "left",
+      sorter: true,
+      render: (registro) => (
+        <Tag color={registro ? "green" : "red"}>
+          {registro ? "Ativo" : "Inativo"}
+        </Tag>
+      ),
+    },
+    {
       title: "Nome/Razão social",
-      width: "25%",
+      width: "15%",
       dataIndex: "name",
       key: "name",
       fixed: "left",
@@ -27,16 +44,19 @@ export const ColunasTabela = ({
     },
     {
       title: "CPF/CNPJ",
-      width: "25%",
+      width: "15%",
       dataIndex: "cpfOrCnpj",
       key: "cpfOrCnpj",
       fixed: "left",
-      render: (data: string, registro: ClientsProps) =>
-        handleFormatCnpjCpf(registro.cpf || registro.cnpj),
+      render: (item, registro: ClientsProps) => {
+        const document = registro.cpf || registro.cnpj;
+
+        return handleHideLastDigitsCpfOrCnpj(document);
+      },
     },
     {
       title: "E-Mail",
-      width: "25%",
+      width: "15%",
       dataIndex: "email",
       key: "email",
       fixed: "left",
@@ -44,7 +64,7 @@ export const ColunasTabela = ({
     },
     {
       title: "Telefone",
-      width: "25%",
+      width: "10%",
       dataIndex: "cellPhone",
       key: "cellPhone",
       fixed: "left",
@@ -52,7 +72,7 @@ export const ColunasTabela = ({
     },
     {
       title: "Localidade",
-      width: "20%",
+      width: "10%",
       dataIndex: "localidade",
       key: "localidade",
       fixed: "left",
@@ -63,20 +83,20 @@ export const ColunasTabela = ({
     {
       title: "Ações",
       key: "acao",
-      width: "15%",
+      width: "5%",
       align: "center",
       render: (record: ClientsProps) => {
-        const items = [
+        const items: Array<ItemProps> = [
           {
             title: "Editar",
             icon: <EditOutlined />,
             onClick: () => onEditar(record),
           },
           {
-            title: "Excluir",
+            title: record.active ? "Inativar" : "Ativar",
             icon: <DeleteOutlined />,
             onClick: () => onExcluir(record),
-            danger: true,
+            typeButton: record.active ? "Danger" : "Success",
           },
         ];
 

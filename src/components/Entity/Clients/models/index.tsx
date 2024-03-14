@@ -29,5 +29,6 @@ export interface ClientsProps {
   bairro: string;
   cidade: string;
   estado: string;
+  active: boolean;
   vehicles: Array<VehiclesProps>;
 }

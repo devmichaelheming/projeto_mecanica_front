@@ -171,4 +171,8 @@ export default createGlobalStyle`
   .ant-input {
     border-radius: 4px;
   }
+
+  .ant-tag {
+    border-radius: 4px;
+  }
 `;

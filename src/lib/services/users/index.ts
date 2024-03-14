@@ -14,7 +14,7 @@ export interface ServicoType {
   get: FiltroType;
   post: RequisicaoRegistroRespostaStringType;
   patch: RequisicaoRegistroRespostaStringType;
-  del: RequisicaoIdRespostaStringType;
+  activateOrDeactivate: RequisicaoIdRespostaStringType;
   salvar: RequisicaoRegistroRespostaStringType;
 }
 
@@ -33,15 +33,23 @@ const useUsersService = (): ServicoType => {
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
-  const patch: RequisicaoRegistroRespostaStringType = (registro) =>
-    api
-      .patch<Response>(`users/${registro.id}`, registro)
+  const patch: RequisicaoRegistroRespostaStringType = (registro) => {
+    const payload = {
+      id: registro.id,
+      name: registro.name,
+      surname: registro.surname,
+      email: registro.email,
+    };
+
+    return api
+      .patch<Response>(`users/${registro.id}`, payload)
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
+  };
 
-  const del: RequisicaoIdRespostaStringType = (id) =>
+  const activateOrDeactivate: RequisicaoIdRespostaStringType = (id) =>
     api
-      .delete<Response>(`users/${id}`)
+      .patch<Response>(`users/activate-or-deactivate/${id}`)
       .then((response) => response.data)
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
@@ -52,7 +60,7 @@ const useUsersService = (): ServicoType => {
     get,
     post,
     patch,
-    del,
+    activateOrDeactivate,
     salvar,
   };
 };

@@ -40,6 +40,9 @@ const FormPage: FC<FormProps> = ({
   const [typePerson, setTypePerson] = useState<"fisica" | "juridica">("fisica");
   const [isLoading, setIsLoading] = useState(false);
   const [listVehicles, setListVehicles] = useState<Array<VehiclesProps>>([]);
+  const [disableCpfOrCnpj, setDisableCpfOrCnpj] = useState(false);
+
+  const isEdition = entity?.id ? true : false;
 
   const handleCancelModal = () => {
     setIsModal(false);
@@ -49,6 +52,7 @@ const FormPage: FC<FormProps> = ({
     setListVehicles([]);
     setTypeForm("edit");
     setTypePerson("fisica");
+    setDisableCpfOrCnpj(false);
   };
 
   const handleConfirmCancelModal = () => {
@@ -71,6 +75,7 @@ const FormPage: FC<FormProps> = ({
         typePerson: typePerson,
         id: entity?.id,
         vehicles: listVehicles,
+        active: true,
       };
 
       try {
@@ -85,7 +90,7 @@ const FormPage: FC<FormProps> = ({
         handleCancelModal();
         mutate();
         message.success(
-          entity?.id
+          isEdition
             ? "Cliente atualizado com sucesso!"
             : "Cliente cadastrado com sucesso!"
         );
@@ -110,15 +115,16 @@ const FormPage: FC<FormProps> = ({
           onClick={() => handleSendData()}
           loading={isLoading}
         >
-          {entity?.id ? "Atualizar" : "Cadastrar"}
+          {isEdition ? "Atualizar" : "Cadastrar"}
         </Button>
       </>
     );
   };
 
   useEffect(() => {
-    if (typeForm === "edit" && entity?.id) {
+    if (typeForm === "edit" && isEdition) {
       setTypePerson(entity.typePerson === "fisica" ? "fisica" : "juridica");
+      setDisableCpfOrCnpj(true);
 
       form.setFieldsValue({
         tipoDocumento: entity.typePerson,
@@ -161,7 +167,11 @@ const FormPage: FC<FormProps> = ({
           <AlertForm type="warning" errors={listErrors} />
         )}
 
-        <GeneralData typePerson={typePerson} setTypePerson={setTypePerson} />
+        <GeneralData
+          typePerson={typePerson}
+          setTypePerson={setTypePerson}
+          disableCpfOrCnpj={disableCpfOrCnpj}
+        />
 
         <Contact form={form} />
 

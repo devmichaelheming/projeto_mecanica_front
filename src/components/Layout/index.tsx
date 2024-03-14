@@ -1,14 +1,15 @@
+import {
+  AppstoreAddOutlined,
+  FileTextOutlined,
+  HomeOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import { Layout } from "antd";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import React, { FC, ReactElement, ReactNode, useState } from "react";
 
-import Header from "./Header";
-
 const { Content, Footer, Sider } = Layout;
-import { budgetIcon, homeIcon, registrationsIcon } from "~/assets/icons";
-
+import Header from "./Header";
 import S from "./styles";
 
 interface LayoutProps {
@@ -22,14 +23,14 @@ const App: FC<LayoutProps> = ({ children }): ReactElement => {
   const itemsMenu: MenuProps["items"] = [
     {
       key: "1",
-      icon: <Image src={homeIcon} />,
-      label: "Inicio",
+      icon: <HomeOutlined />,
+      label: !collapsed && "Inicio",
       onClick: () => router.push("/"),
     },
     {
       key: "2",
-      icon: <Image src={registrationsIcon} />,
-      label: "Cadastros",
+      icon: <AppstoreAddOutlined />,
+      label: !collapsed && "Cadastros",
       children: [
         {
           key: "3",
@@ -53,8 +54,8 @@ const App: FC<LayoutProps> = ({ children }): ReactElement => {
     },
     {
       key: "6",
-      icon: <Image src={budgetIcon} />,
-      label: "Orçamentos",
+      icon: <FileTextOutlined />,
+      label: !collapsed && "Orçamentos",
       onClick: () => router.push("/"),
     },
   ];

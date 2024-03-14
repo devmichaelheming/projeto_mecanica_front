@@ -1,25 +1,25 @@
 import { MenuOutlined } from "@ant-design/icons";
 import { Dropdown, Menu } from "antd";
-import _ from "lodash";
 import React, { FC, ReactElement, ReactNode } from "react";
 
 import S from "./styles";
+export interface ItemProps {
+  title: string;
+  onClick: () => void;
+  icon: ReactNode;
+  typeButton?: "Danger" | "Success" | "Default";
+}
 
-interface MenuActionsProps {
-  items: Array<{
-    title: string;
-    onClick: () => void;
-    icon: ReactNode;
-    danger?: boolean;
-  }>;
+export interface MenuActionsProps {
+  items: Array<ItemProps>;
 }
 
 const MenuActions: FC<MenuActionsProps> = ({ items }): ReactElement => {
   const handleItemsMenu = () => {
-    const dataMenu = items.map((item, key) => {
+    const dataMenu = items.map((item: ItemProps, key) => {
       return (
         <Menu.Item key={key} onClick={item.onClick}>
-          <S.BoxActions danger={item.danger}>
+          <S.BoxActions type={item.typeButton}>
             {item.icon}
             <span>{item.title}</span>
           </S.BoxActions>

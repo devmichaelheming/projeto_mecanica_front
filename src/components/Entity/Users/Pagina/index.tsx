@@ -34,7 +34,7 @@ const Pagina: FC = (): ReactElement => {
 
   const onExcluir = async (registro: UsersProps) => {
     try {
-      const resposta = await service.del(registro.id);
+      const resposta = await service.activateOrDeactivate(registro.id);
 
       if (resposta.sucesso) {
         message.success(resposta.message);
@@ -42,7 +42,11 @@ const Pagina: FC = (): ReactElement => {
         return;
       }
 
-      message.success("Ocorreu um erro ao tentar excluir o usuário.");
+      message.success(
+        `Ocorreu um erro ao tentar ${
+          registro.active ? "inativar" : "ativar"
+        } o usuário.`
+      );
     } catch (ex: any) {
       message.error(ex || "error");
     }
