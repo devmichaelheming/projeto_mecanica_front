@@ -31,3 +31,34 @@ export const handleFormatCnpjCpf = (e: string) => {
   }
   return e;
 };
+/**
+ *
+ * @param e texto referente a formatação de CNPJ ou CPF informada
+ * @returns retorna o CNPJ ou CPF formatando ocultando os últimos digitos com um '*'
+ */
+
+export function handleHideLastDigitsCpfOrCnpj(document) {
+  if (document.length === 18) {
+    const cpfFormatted = document.replace(
+      /(\d{3}\.\d{3}\.)(\d{3})(-\d{2})/,
+      "$1***$3"
+    );
+
+    const splitCpf = cpfFormatted.split("/");
+
+    const formatSplitCnpj = `${splitCpf[0]}/****-**`;
+
+    return formatSplitCnpj;
+  } else {
+    const cpfFormatted = document.replace(
+      /(\d{3}\.\d{3}\.)(\d{3})(-\d{2})/,
+      "$1***$3"
+    );
+
+    const splitCpf = cpfFormatted.split("-");
+
+    const formatSplitCpf = `${splitCpf[0]}-**`;
+
+    return formatSplitCpf;
+  }
+}

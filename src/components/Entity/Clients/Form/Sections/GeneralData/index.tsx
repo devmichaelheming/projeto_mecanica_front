@@ -11,11 +11,13 @@ import S from "../styles";
 interface GeneralDataProps {
   typePerson: "fisica" | "juridica";
   setTypePerson: Dispatch<SetStateAction<"fisica" | "juridica">>;
+  disableCpfOrCnpj: boolean;
 }
 
 const GeneralData: FC<GeneralDataProps> = ({
   setTypePerson,
   typePerson,
+  disableCpfOrCnpj,
 }): ReactElement => {
   return (
     <>
@@ -58,29 +60,33 @@ const GeneralData: FC<GeneralDataProps> = ({
             label={typePerson === "fisica" ? "CPF" : "CNPJ"}
             rules={[{ required: true }]}
           >
-            <InputMask
-              mask={
-                typePerson === "fisica"
-                  ? "999.999.999-99"
-                  : "99.999.999/9999-99"
-              }
-            >
-              {(inputProps) => (
-                <Input
-                  {...inputProps}
-                  id={
-                    typePerson === "fisica"
-                      ? "input-documento-cpf"
-                      : "input-documento-cnpj"
-                  }
-                  placeholder={
-                    typePerson === "fisica"
-                      ? "Insira o seu CPF"
-                      : "Insira o seu CNPJ"
-                  }
-                />
-              )}
-            </InputMask>
+            {disableCpfOrCnpj ? (
+              <Input disabled />
+            ) : (
+              <InputMask
+                mask={
+                  typePerson === "fisica"
+                    ? "999.999.999-99"
+                    : "99.999.999/9999-99"
+                }
+              >
+                {(inputProps) => (
+                  <Input
+                    {...inputProps}
+                    id={
+                      typePerson === "fisica"
+                        ? "input-documento-cpf"
+                        : "input-documento-cnpj"
+                    }
+                    placeholder={
+                      typePerson === "fisica"
+                        ? "Insira o seu CPF"
+                        : "Insira o seu CNPJ"
+                    }
+                  />
+                )}
+              </InputMask>
+            )}
           </Form.Item>
         </Col>
       </Row>

@@ -1,7 +1,7 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 interface BoxActionProps {
-  danger?: boolean;
+  type?: "Danger" | "Success" | "Default";
 }
 
 export const BoxActions = styled.div<BoxActionProps>`
@@ -12,7 +12,23 @@ export const BoxActions = styled.div<BoxActionProps>`
   font-size: 16px;
 
   span {
-    color: ${({ danger }) => (danger ? "red" : "#393939")};
+    ${({ type }) =>
+      type === "Danger" &&
+      css`
+        color: red;
+      `};
+
+    ${({ type }) =>
+      type === "Default" &&
+      css`
+        color: #393939;
+      `};
+
+    ${({ type }) =>
+      type === "Success" &&
+      css`
+        color: green;
+      `};
   }
 `;
 

@@ -1,6 +1,7 @@
 import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
 import useClientService from "~/lib/services/clients";
+import { handleHideLastDigitsCpfOrCnpj } from "~/lib/utils/_funcoes";
 import { Button, message } from "antd";
 import { isArray } from "lodash";
 import React, { FC, ReactElement, useState } from "react";
@@ -35,7 +36,7 @@ const Pagina: FC = (): ReactElement => {
 
   const onExcluir = async (registro: ClientsProps) => {
     try {
-      const resposta = await service.del(registro.id);
+      const resposta = await service.activateOrDeactivate(registro.id);
 
       if (resposta.sucesso) {
         message.success(resposta.message);

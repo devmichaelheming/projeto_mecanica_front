@@ -1,6 +1,6 @@
-import budgetIcon from "./budgetIcon.svg";
-import homeIcon from "./homeIcon.svg";
-import menuIcon from "./menuIcon.svg";
-import registrationsIcon from "./registrationsIcon.svg";
+import BudgetIcon from "./budgetIcon.svg";
+import HomeIcon from "./homeIcon.svg";
+import MenuIcon from "./menuIcon.svg";
+import RegistrationsIcon from "./registrationsIcon.svg";
 
-export { budgetIcon, homeIcon, menuIcon, registrationsIcon };
+export { BudgetIcon, HomeIcon, MenuIcon, RegistrationsIcon };
