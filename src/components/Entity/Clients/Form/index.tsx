@@ -1,6 +1,7 @@
 import AlertForm from "~/components/AlertForm";
 import Modal from "~/components/Modal";
 import useClientService from "~/lib/services/clients";
+import { scrollToTop, validateCpfOrCnpj } from "~/lib/utils/_funcoes";
 import { Button, Form, message, Modal as ModalAntd } from "antd";
 import React, {
   Dispatch,
@@ -69,6 +70,20 @@ const FormPage: FC<FormProps> = ({
 
   const handleSendData = async () => {
     form.validateFields().then(async (values: ClientsProps) => {
+      console.log("values", values);
+
+      if (values.document) {
+        const validate = validateCpfOrCnpj(values.document);
+
+        if (!validate) {
+          scrollToTop();
+          setListErrors(["O CPF informado é inválido."]);
+          return;
+        }
+
+        setListErrors([]);
+      }
+
       setIsLoading(true);
       const payload = {
         ...values,
@@ -84,6 +99,7 @@ const FormPage: FC<FormProps> = ({
         if (!resposta.sucesso) {
           setListErrors(resposta.errors);
           setIsLoading(false);
+          scrollToTop();
           return;
         }
 
@@ -128,8 +144,7 @@ const FormPage: FC<FormProps> = ({
 
       form.setFieldsValue({
         tipoDocumento: entity.typePerson,
-        cpf: entity.cpf,
-        cnpj: entity.cnpj,
+        document: entity.document,
         name: entity.name,
         surname: entity.surname,
         razaoSocial: entity.razaoSocial,

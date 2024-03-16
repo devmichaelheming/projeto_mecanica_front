@@ -1,9 +1,6 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import MenuActions, { ItemProps } from "~/components/MenuActions";
-import {
-  handleFormatCnpjCpf,
-  handleHideLastDigitsCpfOrCnpj,
-} from "~/lib/utils/_funcoes";
+import { handleHideLastDigitsCpf } from "~/lib/utils/_funcoes";
 import { Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
@@ -40,7 +37,9 @@ export const ColunasTabela = ({
       key: "name",
       fixed: "left",
       render: (data: string, registro: ClientsProps) =>
-        registro.razaoSocial ? registro.razaoSocial : registro.name,
+        registro.razaoSocial
+          ? registro.razaoSocial
+          : `${registro.name} ${registro.surname}`,
     },
     {
       title: "CPF/CNPJ",
@@ -49,9 +48,9 @@ export const ColunasTabela = ({
       key: "cpfOrCnpj",
       fixed: "left",
       render: (item, registro: ClientsProps) => {
-        const document = registro.cpf || registro.cnpj;
-
-        return handleHideLastDigitsCpfOrCnpj(document);
+        return registro.document.length === 14
+          ? handleHideLastDigitsCpf(registro.document)
+          : registro.document;
       },
     },
     {

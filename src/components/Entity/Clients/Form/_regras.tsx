@@ -1,9 +1,9 @@
 import { Col, Form, Input } from "antd";
 
-export const handleRenderInputPersonFisica = () => {
+export const handleRenderInputPersonFisica = (disableCpfOrCnpj: boolean) => {
   return (
     <>
-      <Col span={12}>
+      <Col span={disableCpfOrCnpj ? 8 : 12}>
         <Form.Item
           name="name"
           label="Nome"
@@ -13,7 +13,7 @@ export const handleRenderInputPersonFisica = () => {
         </Form.Item>
       </Col>
 
-      <Col span={12}>
+      <Col span={disableCpfOrCnpj ? 8 : 12}>
         <Form.Item
           name="surname"
           label="Sobrenome"
@@ -32,10 +32,10 @@ export const handleRenderInputPersonFisica = () => {
   );
 };
 
-export const handleRenderInputPersonJuridica = () => {
+export const handleRenderInputPersonJuridica = (disableCpfOrCnpj: boolean) => {
   return (
     <>
-      <Col span={12}>
+      <Col span={disableCpfOrCnpj ? 8 : 12}>
         <Form.Item
           name="razaoSocial"
           label="Razão social"
@@ -45,17 +45,11 @@ export const handleRenderInputPersonJuridica = () => {
         </Form.Item>
       </Col>
 
-      <Col span={12}>
+      <Col span={disableCpfOrCnpj ? 8 : 12}>
         <Form.Item
           name="nomeFantasia"
           label="Nome fantasia"
-          rules={[
-            {
-              required: true,
-            },
-            { max: 100 },
-            { min: 3 },
-          ]}
+          rules={[{ max: 100 }, { min: 3 }]}
         >
           <Input placeholder="Insira o nome fantasia" />
         </Form.Item>

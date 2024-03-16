@@ -47,7 +47,7 @@ const useClientService = (): ServicoType => {
       .catch((error) => ({ ...error?.response?.data, sucesso: false }));
 
   const patch: RequisicaoRegistroRespostaStringType = (registro) => {
-    const { active, cpf, cnpj, ...payload } = registro;
+    const { active, document, ...payload } = registro;
 
     return api
       .patch<Response>(`clients/${registro.id}`, payload)

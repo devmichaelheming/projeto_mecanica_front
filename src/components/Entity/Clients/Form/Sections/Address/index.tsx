@@ -138,19 +138,25 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
 
         <Col span={12}>
           <Form.Item name="rua" label="Rua" rules={[{ required: true }]}>
-            <Input placeholder="Insira a sua rua" />
+            <Input placeholder="Insira a sua rua" disabled={isLoadingGetCep} />
           </Form.Item>
         </Col>
 
         <Col span={12}>
           <Form.Item name="numero" label="Número" rules={[{ required: true }]}>
-            <Input placeholder="Insira a sua rua" />
+            <Input
+              placeholder="Insira o seu número"
+              disabled={isLoadingGetCep}
+            />
           </Form.Item>
         </Col>
 
         <Col span={12}>
           <Form.Item name="bairro" label="Bairro" rules={[{ required: true }]}>
-            <Input placeholder="Insira o seu bairro" />
+            <Input
+              placeholder="Insira o seu bairro"
+              disabled={isLoadingGetCep}
+            />
           </Form.Item>
         </Col>
 
@@ -171,6 +177,7 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
               placeholder="Selecione o estado"
               onSelect={(e) => handleGetCities(e)}
               options={ufList}
+              disabled={isLoadingGetCep}
             />
           </Form.Item>
         </Col>
@@ -192,7 +199,7 @@ const Address: FC<AddressProps> = ({ form }): ReactElement => {
               placeholder="Selecione a sua cidade"
               options={listCities}
               loading={isLoadingGetCities}
-              disabled={isLoadingGetCities}
+              disabled={isLoadingGetCities || isLoadingGetCep}
             />
           </Form.Item>
         </Col>

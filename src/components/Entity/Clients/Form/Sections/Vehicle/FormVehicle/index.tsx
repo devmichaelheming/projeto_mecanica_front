@@ -217,7 +217,7 @@ const FormPage: FC<FormProps> = ({
             <Form.Item
               name="chassisNumber"
               label="Número do Chassi"
-              rules={[{ required: true }, { min: 17 }]}
+              rules={[{ min: 17 }]}
             >
               <Input placeholder="Insira o número do chassi" maxLength={17} />
             </Form.Item>
@@ -227,7 +227,7 @@ const FormPage: FC<FormProps> = ({
             <Form.Item
               name="engineNumber"
               label="Número do motor"
-              rules={[{ required: true }, { min: 6 }]}
+              rules={[{ min: 6 }]}
             >
               <Input placeholder="Insira o número do motor" maxLength={6} />
             </Form.Item>

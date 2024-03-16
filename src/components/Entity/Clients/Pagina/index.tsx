@@ -1,7 +1,6 @@
 import { Card } from "~/components";
 import Breadcrumb from "~/components/Breadcrumb";
 import useClientService from "~/lib/services/clients";
-import { handleHideLastDigitsCpfOrCnpj } from "~/lib/utils/_funcoes";
 import { Button, message } from "antd";
 import { isArray } from "lodash";
 import React, { FC, ReactElement, useState } from "react";
