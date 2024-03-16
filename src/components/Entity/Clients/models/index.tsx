@@ -14,8 +14,7 @@ export interface ClientsProps {
   id: string;
   tipoDocumento?: string;
   typePerson: string;
-  cpf: string;
-  cnpj: string;
+  document: string;
   name: string;
   surname: string;
   razaoSocial: string;

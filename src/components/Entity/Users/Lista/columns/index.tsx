@@ -1,6 +1,6 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import MenuActions, { ItemProps } from "~/components/MenuActions";
-import { handleHideLastDigitsCpfOrCnpj } from "~/lib/utils/_funcoes";
+import { handleHideLastDigitsCpf } from "~/lib/utils/_funcoes";
 import { Tag } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import React from "react";
@@ -49,13 +49,13 @@ export const ColunasTabela = ({
       sorter: true,
     },
     {
-      title: "Cpf",
+      title: "CPF",
       width: "20%",
       dataIndex: "cpf",
       key: "cpf",
       fixed: "left",
       sorter: true,
-      render: (registro) => handleHideLastDigitsCpfOrCnpj(registro),
+      render: (registro) => handleHideLastDigitsCpf(registro),
     },
     {
       title: "Ações",

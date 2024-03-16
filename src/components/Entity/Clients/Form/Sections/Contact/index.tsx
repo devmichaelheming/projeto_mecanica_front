@@ -34,7 +34,7 @@ const Contact: FC<ContactProps> = ({ form }): ReactElement => {
           <Form.Item
             name="email"
             label="E-mail"
-            rules={[{ required: true }, { max: 200 }, { type: "email" }]}
+            rules={[{ max: 200 }, { type: "email" }]}
           >
             <Input placeholder="Insira o e-mail do usuário" />
           </Form.Item>
