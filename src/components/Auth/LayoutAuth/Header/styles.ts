@@ -17,7 +17,7 @@ export const Container = styled(Layout.Header)`
 
 export const Wrapper = styled.div`
   height: 56px;
-  width: 100%;
+  width: 56px;
 
   background: transparent;
 
@@ -25,8 +25,7 @@ export const Wrapper = styled.div`
 
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  column-gap: 8px;
+  justify-content: center;
 `;
 
 export const CircleProfile = styled.div`

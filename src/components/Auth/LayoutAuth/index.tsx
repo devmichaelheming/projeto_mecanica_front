@@ -6,9 +6,9 @@ import {
 import type { MenuProps } from "antd";
 import { Layout } from "antd";
 import { useRouter } from "next/router";
-import React, { FC, ReactElement, ReactNode, useState } from "react";
+import React, { FC, ReactElement, ReactNode, useEffect, useState } from "react";
 
-const { Content, Footer, Sider } = Layout;
+const { Footer, Sider } = Layout;
 import Header from "./Header";
 import S from "./styles";
 
@@ -19,6 +19,8 @@ interface LayoutProps {
 const App: FC<LayoutProps> = ({ children }): ReactElement => {
   const [collapsed, setCollapsed] = useState(false);
   const router = useRouter();
+
+  const signIn = false;
 
   const itemsMenu: MenuProps["items"] = [
     {
@@ -59,6 +61,14 @@ const App: FC<LayoutProps> = ({ children }): ReactElement => {
       onClick: () => router.push("/home"),
     },
   ];
+
+  // useEffect(() => {
+  //   if (signIn) {
+  //     router.push('/signIn');
+  //   } else {
+  //     router.push('/');
+  //   }
+  // }, [signIn]);
 
   return (
     <Layout>

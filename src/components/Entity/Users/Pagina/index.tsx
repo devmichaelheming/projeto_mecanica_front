@@ -13,11 +13,11 @@ import { UsersProps } from "../models";
 const BreadcrumbData = [
   {
     title: "Home",
-    link: "/",
+    link: "/home",
   },
   {
     title: "Usuários",
-    link: "/usuarios",
+    link: "/home/usuarios",
   },
 ];
 
@@ -43,9 +43,8 @@ const Pagina: FC = (): ReactElement => {
       }
 
       message.success(
-        `Ocorreu um erro ao tentar ${
-          registro.active ? "inativar" : "ativar"
-        } o usuário.`
+        `Ocorreu um erro ao tentar
+        ${registro.active ? "inativar" : "ativar"} o usuário.`
       );
     } catch (ex: any) {
       message.error(ex || "error");

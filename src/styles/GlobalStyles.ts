@@ -11,6 +11,7 @@ export default createGlobalStyle`
   body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+    background-color: #f5f5f5;
   }
 
   body, input, textarea, button {

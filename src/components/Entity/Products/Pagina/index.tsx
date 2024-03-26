@@ -12,11 +12,11 @@ import Lista from "../Lista";
 const BreadcrumbData = [
   {
     title: "Home",
-    link: "/",
+    link: "/home",
   },
   {
     title: "Produtos",
-    link: "/produtos",
+    link: "/home/produtos",
   },
 ];
 

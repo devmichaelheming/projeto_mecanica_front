@@ -7,7 +7,8 @@
     "start": "next start",
     "lint": "next lint",
     "prepare": "husky",
-    "antcss": "node ./src/lib/genAntdCss.mjs"
+    "eslint": "eslint --ext .ts,.tsx src",
+    "eslint:fix": "eslint --ext .ts,.tsx --quiet --fix src"
   },
   "dependencies": {
     "@ant-design/icons": "^5.3.0",
