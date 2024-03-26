@@ -1,21 +1,8 @@
-import Breadcrumb from "~/components/Breadcrumb";
-import type { NextPage } from "next";
+import React, { FC, ReactElement } from "react";
+import Loading from "~/components/Loading";
 
-const BreadcrumbData = [
-  {
-    title: "Home",
-    link: "/",
-  },
-];
-
-const Home: NextPage = () => {
-  return (
-    <>
-      <Breadcrumb data={BreadcrumbData} />
-
-      <h3>Página Home</h3>
-    </>
-  );
+const pages: FC = (): ReactElement => {
+  return <Loading size="large" fullscreen />;
 };
 
-export default Home;
+export default pages;

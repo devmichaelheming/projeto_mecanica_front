@@ -1,4 +1,6 @@
+import { Layout } from "antd";
 import styled from "styled-components";
+export const { Content: AntdContent } = Layout;
 
 export const Container = styled.div`
   padding: 20px;

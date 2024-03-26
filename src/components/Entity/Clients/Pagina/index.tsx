@@ -13,11 +13,11 @@ import { ClientsProps } from "../models";
 const BreadcrumbData = [
   {
     title: "Home",
-    link: "/",
+    link: "/home",
   },
   {
     title: "Clientes",
-    link: "/clientes",
+    link: "/home/clientes",
   },
 ];
 
