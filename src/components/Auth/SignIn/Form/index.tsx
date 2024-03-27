@@ -1,12 +1,12 @@
+import { LoadingOutlined } from "@ant-design/icons";
+import Input from "~/components/Form/Input";
+import useAuthService from "~/lib/services/auth";
 import { Form, Spin, message } from "antd";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { FC, ReactElement, useState } from "react";
 
 import S from "./styles";
-import Input from "~/components/Form/Input";
-import useAuthService from "~/lib/services/auth";
-import { useRouter } from "next/router";
-import { LoadingOutlined } from "@ant-design/icons";
 
 const FormPage: FC = (): ReactElement => {
   const [form] = Form.useForm();
@@ -27,8 +27,6 @@ const FormPage: FC = (): ReactElement => {
         const resposta = await service.signIn(payload);
 
         if (!resposta.sucesso) {
-          console.log("resposta", resposta);
-
           message.error(resposta.message);
           setIsLoading(false);
           return;
