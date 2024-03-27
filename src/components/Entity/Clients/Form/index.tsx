@@ -70,8 +70,6 @@ const FormPage: FC<FormProps> = ({
 
   const handleSendData = async () => {
     form.validateFields().then(async (values: ClientsProps) => {
-      console.log("values", values);
-
       if (values.document) {
         const validate = validateCpfOrCnpj(values.document);
 

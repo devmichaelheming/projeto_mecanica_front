@@ -6,7 +6,7 @@ import { ConfigProvider } from "antd";
 import ptBR from "antd/lib/locale/pt_BR";
 import type { AppProps } from "next/app";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, lazy, Suspense } from "react";
+import { ReactElement, useEffect, lazy, Suspense, useState } from "react";
 
 import "antd/dist/antd.css";
 
@@ -14,23 +14,23 @@ const LayoutPage = lazy(() => import("~/components/Layout"));
 
 const MyApp = ({ Component, pageProps }: AppProps): ReactElement => {
   const router = useRouter();
-  const { token, setToken } = useAuthStore();
+  const { token, loadFromGetToken } = useAuthStore();
+  const [initialCheckDone, setInitialCheckDone] = useState(false);
 
   useEffect(() => {
-    const tokenLocalStorage = localStorage.getItem("@auth/access_token");
-
-    if (tokenLocalStorage) {
-      setToken(tokenLocalStorage);
-    }
+    loadFromGetToken();
+    setInitialCheckDone(true);
   }, []);
 
   useEffect(() => {
-    if (token !== null && token === "") {
+    if (!initialCheckDone) return;
+
+    if (token === null) {
       router.push("/signIn");
-    } else {
+    } else if (token !== "") {
       router.push("/home");
     }
-  }, [token]);
+  }, [token, initialCheckDone]);
 
   return (
     <ConfigProvider locale={ptBR}>
