@@ -1,16 +1,16 @@
 import { UserOutlined } from "@ant-design/icons";
+import useAuthStore from "~/lib/stores/useAuthStore";
+import { useRouter } from "next/router";
 import React, { FC, ReactElement } from "react";
 
 import S from "./styles";
-import useAuthStore from "~/lib/stores/useAuthStore";
-import { useRouter } from "next/router";
 
 const HeaderPage: FC = (): ReactElement => {
   const { setToken } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {
-    setToken("");
+    setToken(null);
     localStorage.removeItem("@auth/access_token");
     router.push("/signIn");
   };
